@@ -1,0 +1,12 @@
+import { Injectable } from '@nestjs/common';
+import { AiService } from '../../ai/ai.service';
+import { eligibilityPrompt } from './eligibility.prompt';
+
+@Injectable()
+export class EligibilityService {
+  constructor(private readonly aiService: AiService) {}
+
+  async generate(payload: any) {
+    return this.aiService.generate(eligibilityPrompt, payload);
+  }
+}

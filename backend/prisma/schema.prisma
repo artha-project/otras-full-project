@@ -1,0 +1,382 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                    Int                        @id @default(autoincrement())
+  firstName             String
+  lastName              String
+  email                 String                     @unique
+  password              String
+  age                   Int?
+  category              String?
+  otrId                 String                     @unique
+  highestDegree         String?
+  careerPreference      String?
+  domicile              String?
+  pincode               String?
+  preferredLanguage     String                     @default("en")
+  createdAt             DateTime                   @default(now())
+  updatedAt             DateTime                   @updatedAt
+  credits               Int                        @default(0)
+  referralCode          String                     @unique
+  applications          Application[]
+  careerReadinessScores CareerReadinessTestScore[]
+  mockTestAttempts      MockTestAttempt[]
+  payments              Payment[]
+  referralsMade         Referral[]                 @relation("ReferrerRelation")
+  referralRewards       ReferralReward[]
+  results               Result[]
+  studyPlans            StudyPlan[]
+}
+
+model Job {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  deadline    DateTime
+  status      String   @default("Open")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Exam {
+  id                Int           @id @default(autoincrement())
+  name              String
+  cutoff            Float?
+  syllabus          String?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  eligibility       String?
+  longDescription   String?
+  noOfQuestions     Int?
+  pattern           String?
+  shortDescription  String?
+  applicationStatus String        @default("Application Success")
+  applications      Application[]
+  mockTests         MockTest[]
+  pyps              PYP[]
+  tests             Test[]
+  subjects          Subject[]     @relation("ExamToSubject")
+  studyPlans        StudyPlan[]
+}
+
+model Subject {
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  questions Question[]
+  exams     Exam[]     @relation("ExamToSubject")
+}
+
+model Question {
+  id        Int      @id @default(autoincrement())
+  text      String
+  options   String[]
+  answer    String
+  subjectId Int
+  createdAt DateTime @default(now())
+  subject   Subject  @relation(fields: [subjectId], references: [id])
+  tests     Test[]   @relation("QuestionToTest")
+}
+
+model Test {
+  id                    Int                        @id @default(autoincrement())
+  name                  String
+  examId                Int
+  createdAt             DateTime                   @default(now())
+  careerReadinessScores CareerReadinessTestScore[]
+  results               Result[]
+  exam                  Exam                       @relation(fields: [examId], references: [id])
+  questions             Question[]                 @relation("QuestionToTest")
+}
+
+model PYP {
+  id        Int      @id @default(autoincrement())
+  year      Int
+  fileUrl   String
+  examId    Int
+  createdAt DateTime @default(now())
+  exam      Exam     @relation(fields: [examId], references: [id])
+}
+
+model Subscription {
+  id            Int       @id @default(autoincrement())
+  title         String
+  price         Float
+  features      String[]
+  isRecommended Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  payments      Payment[]
+}
+
+model Admin {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+}
+
+model Result {
+  id               Int      @id @default(autoincrement())
+  userId           Int
+  testId           Int
+  score            Float
+  subjectBreakdown Json
+  tier             Int?
+  startTime        DateTime?
+  submitTime       DateTime?
+  createdAt        DateTime @default(now())
+  test             Test     @relation(fields: [testId], references: [id])
+  user             User     @relation(fields: [userId], references: [id])
+}
+
+model Application {
+  id                Int      @id @default(autoincrement())
+  userId            Int
+  examId            Int
+  status            String   @default("Applied")
+  applicationStatus String   @default("Success")
+  admitCardStatus   String   @default("Pending")
+  examKeyStatus     String   @default("Pending")
+  resultStatus      String   @default("Pending")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  exam              Exam     @relation(fields: [examId], references: [id])
+  user              User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, examId])
+}
+
+model MockTestCategory {
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  mockTests MockTest[]
+}
+
+model MockTest {
+  id              Int               @id @default(autoincrement())
+  title           String
+  duration        Int
+  sectionType     String
+  isProctored     Boolean           @default(false)
+  isAdaptive      Boolean           @default(false)
+  categoryId      Int
+  examId          Int?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  category        MockTestCategory  @relation(fields: [categoryId], references: [id])
+  exam            Exam?             @relation(fields: [examId], references: [id])
+  attempts        MockTestAttempt[]
+  referralRewards ReferralReward[]
+}
+
+model MockTestAttempt {
+  id          Int       @id @default(autoincrement())
+  otrId       String
+  mockTestId  Int
+  score       Float
+  totalMarks  Float
+  startTime   DateTime?
+  submitTime  DateTime?
+  attemptedAt DateTime  @default(now())
+  mockTest    MockTest  @relation(fields: [mockTestId], references: [id])
+  user        User      @relation(fields: [otrId], references: [otrId])
+}
+
+model CareerReadinessTestScore {
+  id               Int      @id @default(autoincrement())
+  otrId            String
+  testId           Int
+  totalScore       Float
+  totalMarks       Float
+  correctAnswers   Int
+  wrongAnswers     Int
+  negativeMarks    Float
+  subjectBreakdown Json
+  createdAt        DateTime @default(now())
+  user             User     @relation(fields: [otrId], references: [otrId])
+  test             Test     @relation(fields: [testId], references: [id])
+
+  @@unique([otrId, testId], name: "otrId_testId")
+}
+
+model Payment {
+  id                Int          @id @default(autoincrement())
+  userId            Int
+  subscriptionId    Int
+  razorpayOrderId   String       @unique
+  razorpayPaymentId String?      @unique
+  razorpaySignature String?
+  amount            Float
+  currency          String       @default("INR")
+  status            String       @default("created")
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  paymentMethod     String       @default("razorpay")
+  subscription      Subscription @relation(fields: [subscriptionId], references: [id])
+  user              User         @relation(fields: [userId], references: [id])
+}
+
+model Referral {
+  id            Int      @id @default(autoincrement())
+  referrerId    Int
+  refereeOtrId  String
+  status        String   @default("Joined")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  creditsEarned Int      @default(0)
+  referrer      User     @relation("ReferrerRelation", fields: [referrerId], references: [id])
+
+  @@unique([referrerId, refereeOtrId])
+}
+
+model ReferralReward {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  mockTestId Int
+  isRedeemed Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  mockTest   MockTest @relation(fields: [mockTestId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+}
+
+model StudyPlan {
+  id String @id @default(uuid())
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+
+  exam   Exam? @relation(fields: [examId], references: [id])
+  examId Int?
+
+  targetExam String
+  examDate   DateTime
+
+  tier1Score Int?
+  tier2Score Int?
+
+  currentLevel String
+  weakAreas    String[]
+
+  dailyStudyHours     Int
+  mockFrequency       String
+  revisionStrategy    String
+  preferredStudyTimes String
+
+  days StudyPlanDay[]
+
+  createdAt DateTime @default(now())
+}
+
+model StudyPlanDay {
+  id String @id @default(uuid())
+
+  day String
+
+  plan   StudyPlan @relation(fields: [planId], references: [id])
+  planId String
+
+  activities StudyActivity[]
+}
+
+model StudyActivity {
+  id String @id @default(uuid())
+
+  timeSlot    String
+  description String
+
+  focusArea String?
+
+  completed Boolean @default(false)
+  missed    Boolean @default(false)
+
+  day   StudyPlanDay @relation(fields: [dayId], references: [id])
+  dayId String
+}
+
+model ArthaProfile {
+  id String @id @default(uuid())
+
+  userId String
+  otrCompleted Boolean @default(false)
+
+  logicalScore Float
+  quantScore Float
+  verbalScore Float
+
+  percentile Float
+
+  tier1Progress Float
+  tier2Progress Float
+  tier3Progress Float
+
+  createdAt DateTime @default(now())
+
+  feedback IntelligenceFeedback?
+  assessments ArthaAssessment[]
+}
+
+model ArthaAssessment {
+  id             String   @id @default(uuid())
+  profileId      String
+  tier           Int
+  exam           String?
+  logicalScore   Float?
+  quantScore     Float?
+  verbalScore    Float?
+  subjectScores  Json?
+  accuracy       Float?
+  speed          Float?
+  consistency    Float?
+  percentile     Float?
+  startTime      DateTime?
+  submitTime     DateTime?
+  createdAt      DateTime @default(now())
+
+  profile        ArthaProfile @relation(fields: [profileId], references: [id])
+  attempts       ArthaQuestionAttempt[]
+}
+
+model ArthaQuestionAttempt {
+  id                String   @id @default(uuid())
+  assessmentId      String
+  questionId        Int
+  selectedOption    String
+  isCorrect         Boolean
+  timeTaken         Int      // in seconds
+  attemptedAt       DateTime @default(now())
+
+  assessment        ArthaAssessment @relation(fields: [assessmentId], references: [id])
+}
+
+model IntelligenceFeedback {
+  id String @id @default(uuid())
+
+  profileId String @unique
+  tier      Int    @default(1)
+
+  // Tier 1 - Career Readiness
+  logicalFoundation String?
+  subjectDepth String?
+  readinessInsight String?
+
+  // Tier 2 - Subject Competency
+  subjectStrength String?
+  weakAreas String?
+  preparationAdvice String?
+
+  // Tier 3 - Performance Intelligence
+  accuracyInsight String?
+  speedInsight String?
+  consistencyInsight String?
+
+  createdAt DateTime @default(now())
+
+  ArthaProfile ArthaProfile @relation(fields: [profileId], references: [id])
+}

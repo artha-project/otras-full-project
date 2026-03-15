@@ -1,0 +1,200 @@
+import { PrismaService } from '../../../prisma/prisma.service';
+export declare class ArthaRepository {
+    private readonly prisma;
+    constructor(prisma: PrismaService);
+    findProfileByUserId(userId: string): Promise<({
+        feedback: {
+            id: string;
+            createdAt: Date;
+            tier: number;
+            weakAreas: string | null;
+            profileId: string;
+            logicalFoundation: string | null;
+            subjectDepth: string | null;
+            readinessInsight: string | null;
+            subjectStrength: string | null;
+            preparationAdvice: string | null;
+            accuracyInsight: string | null;
+            speedInsight: string | null;
+            consistencyInsight: string | null;
+        } | null;
+    } & {
+        id: string;
+        createdAt: Date;
+        userId: string;
+        otrCompleted: boolean;
+        logicalScore: number;
+        quantScore: number;
+        verbalScore: number;
+        percentile: number;
+        tier1Progress: number;
+        tier2Progress: number;
+        tier3Progress: number;
+    }) | null>;
+    findSelectedExam(userId: string): Promise<string>;
+    findTier2Results(userId: string): Promise<any>;
+    findTier3Metrics(userId: string): Promise<{
+        accuracy: number;
+        speed: number;
+        consistency: number;
+    }>;
+    saveAssessment(profileId: string, data: {
+        tier: number;
+        exam?: string;
+        logicalScore?: number;
+        quantScore?: number;
+        verbalScore?: number;
+        subjectScores?: any;
+        accuracy?: number;
+        speed?: number;
+        consistency?: number;
+        percentile?: number;
+        startTime?: Date;
+        submitTime?: Date;
+    }): Promise<{
+        exam: string | null;
+        id: string;
+        createdAt: Date;
+        logicalScore: number | null;
+        quantScore: number | null;
+        verbalScore: number | null;
+        percentile: number | null;
+        tier: number;
+        startTime: Date | null;
+        submitTime: Date | null;
+        subjectScores: import("@prisma/client/runtime/library").JsonValue | null;
+        accuracy: number | null;
+        speed: number | null;
+        consistency: number | null;
+        profileId: string;
+    }>;
+    startAssessment(userId: string, tier: number): Promise<{
+        exam: string | null;
+        id: string;
+        createdAt: Date;
+        logicalScore: number | null;
+        quantScore: number | null;
+        verbalScore: number | null;
+        percentile: number | null;
+        tier: number;
+        startTime: Date | null;
+        submitTime: Date | null;
+        subjectScores: import("@prisma/client/runtime/library").JsonValue | null;
+        accuracy: number | null;
+        speed: number | null;
+        consistency: number | null;
+        profileId: string;
+    }>;
+    completeAssessment(assessmentId: string, data: any): Promise<{
+        exam: string | null;
+        id: string;
+        createdAt: Date;
+        logicalScore: number | null;
+        quantScore: number | null;
+        verbalScore: number | null;
+        percentile: number | null;
+        tier: number;
+        startTime: Date | null;
+        submitTime: Date | null;
+        subjectScores: import("@prisma/client/runtime/library").JsonValue | null;
+        accuracy: number | null;
+        speed: number | null;
+        consistency: number | null;
+        profileId: string;
+    }>;
+    saveQuestionAttempt(data: {
+        assessmentId: string;
+        questionId: number;
+        selectedOption: string;
+        isCorrect: boolean;
+        timeTaken: number;
+    }): Promise<{
+        id: string;
+        attemptedAt: Date;
+        questionId: number;
+        selectedOption: string;
+        isCorrect: boolean;
+        timeTaken: number;
+        assessmentId: string;
+    }>;
+    findQuestionAttempts(assessmentId: string): Promise<{
+        id: string;
+        attemptedAt: Date;
+        questionId: number;
+        selectedOption: string;
+        isCorrect: boolean;
+        timeTaken: number;
+        assessmentId: string;
+    }[]>;
+    hasActiveSubscription(userId: string | number): Promise<boolean>;
+    createOrUpdateProfile(data: any, percentile: number): Promise<{
+        feedback: {
+            id: string;
+            createdAt: Date;
+            tier: number;
+            weakAreas: string | null;
+            profileId: string;
+            logicalFoundation: string | null;
+            subjectDepth: string | null;
+            readinessInsight: string | null;
+            subjectStrength: string | null;
+            preparationAdvice: string | null;
+            accuracyInsight: string | null;
+            speedInsight: string | null;
+            consistencyInsight: string | null;
+        } | null;
+    } & {
+        id: string;
+        createdAt: Date;
+        userId: string;
+        otrCompleted: boolean;
+        logicalScore: number;
+        quantScore: number;
+        verbalScore: number;
+        percentile: number;
+        tier1Progress: number;
+        tier2Progress: number;
+        tier3Progress: number;
+    }>;
+    updateTier2Progress(userId: string): Promise<{
+        id: string;
+        createdAt: Date;
+        userId: string;
+        otrCompleted: boolean;
+        logicalScore: number;
+        quantScore: number;
+        verbalScore: number;
+        percentile: number;
+        tier1Progress: number;
+        tier2Progress: number;
+        tier3Progress: number;
+    }>;
+    updateTier3Progress(userId: string): Promise<{
+        id: string;
+        createdAt: Date;
+        userId: string;
+        otrCompleted: boolean;
+        logicalScore: number;
+        quantScore: number;
+        verbalScore: number;
+        percentile: number;
+        tier1Progress: number;
+        tier2Progress: number;
+        tier3Progress: number;
+    }>;
+    saveFeedback(profileId: string, tier: number, feedback: any): Promise<{
+        id: string;
+        createdAt: Date;
+        tier: number;
+        weakAreas: string | null;
+        profileId: string;
+        logicalFoundation: string | null;
+        subjectDepth: string | null;
+        readinessInsight: string | null;
+        subjectStrength: string | null;
+        preparationAdvice: string | null;
+        accuracyInsight: string | null;
+        speedInsight: string | null;
+        consistencyInsight: string | null;
+    }>;
+}

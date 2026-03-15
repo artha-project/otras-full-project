@@ -1,0 +1,3 @@
+UPDATE public."User"
+SET "credits"=100
+WHERE id=2
