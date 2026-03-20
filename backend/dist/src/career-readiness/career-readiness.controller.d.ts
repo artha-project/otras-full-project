@@ -1,0 +1,40 @@
+import { CareerReadinessService } from './career-readiness.service';
+export declare class CareerReadinessController {
+    private readonly careerReadinessService;
+    constructor(careerReadinessService: CareerReadinessService);
+    saveResult(body: {
+        otrId: string;
+        testId: any;
+        answers: any[];
+    }): Promise<{
+        id: number;
+        otrId: string;
+        createdAt: Date;
+        totalMarks: number;
+        subjectBreakdown: import("@prisma/client/runtime/library").JsonValue;
+        testId: number;
+        totalScore: number;
+        correctAnswers: number;
+        wrongAnswers: number;
+        negativeMarks: number;
+    }>;
+    getByOtrId(otrId: string): Promise<({
+        test: {
+            id: number;
+            createdAt: Date;
+            name: string;
+            examId: number;
+        };
+    } & {
+        id: number;
+        otrId: string;
+        createdAt: Date;
+        totalMarks: number;
+        subjectBreakdown: import("@prisma/client/runtime/library").JsonValue;
+        testId: number;
+        totalScore: number;
+        correctAnswers: number;
+        wrongAnswers: number;
+        negativeMarks: number;
+    }) | null>;
+}
