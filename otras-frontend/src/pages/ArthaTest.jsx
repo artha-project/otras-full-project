@@ -153,7 +153,8 @@ export default function ArthaTest({ user }) {
       return [...prev, { questionId, selectedOption }];
     });
 
-    if (activeAssessmentId) {
+    // Only record live question attempts for Artha Tier Assessments, not Mock Tests
+    if (activeAssessmentId && !testData?.isMockTest) {
       console.log(`\nARTHA Progress Engine: Question Attempted`);
       console.log(`Tier: Tier-${state?.tier}`);
 
@@ -252,7 +253,9 @@ export default function ArthaTest({ user }) {
           examId: activeTest.examId,
           score: totalScore,
           totalMarks: questions.length,
+          correctAnswers: correctCount,
           attemptId: activeAssessmentId,
+          subjectBreakdown: subjectWise,
         });
       } else {
         const targetTier = state?.tier;

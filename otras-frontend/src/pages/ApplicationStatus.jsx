@@ -24,11 +24,11 @@ export default function ApplicationStatus({ user }) {
         }
     };
 
-    const steps = [
-        t('applicationSuccess'),
-        t('admitCardRelease'),
-        t('examKey'),
-        t('results')
+    const statusMapping = [
+        { key: 'applicationSuccess', dbValue: 'Application Success' },
+        { key: 'admitCardRelease', dbValue: 'Admit Card Release' },
+        { key: 'examKey', dbValue: 'Exam key' },
+        { key: 'results', dbValue: 'Results' }
     ];
 
     return (
@@ -81,8 +81,8 @@ export default function ApplicationStatus({ user }) {
                                 <div className="px-6 pb-8 pt-2 animate-in zoom-in-95 duration-300">
                                     <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100">
                                         <div className="space-y-6 relative border-l-2 border-slate-200 ml-4 pl-8 py-2">
-                                            {steps.map((stepLabel, idx) => {
-                                                const currentStatusIdx = steps.indexOf(app.exam.applicationStatus || 'Application Success');
+                                            {statusMapping.map((step, idx) => {
+                                                const currentStatusIdx = statusMapping.findIndex(s => s.dbValue === (app.exam.applicationStatus || 'Application Success'));
                                                 const isCompleted = idx <= currentStatusIdx;
 
                                                 return (
@@ -92,7 +92,7 @@ export default function ApplicationStatus({ user }) {
                                                         </div>
                                                         <div>
                                                             <p className={`font-bold transition-colors ${isCompleted ? 'text-slate-900' : 'text-slate-400'}`}>
-                                                                {stepLabel}
+                                                                {t(step.key)}
                                                             </p>
                                                             <p className="text-xs text-slate-500 mt-0.5">
                                                                 {isCompleted ? t("verifiedCompleted") : t("scheduledPending")}

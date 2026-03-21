@@ -117,11 +117,40 @@ export class UserService {
     }
 
     private generateOtrId(state: string, pincode: string): string {
-        const stateCode = (state || 'XX').substring(0, 2).toUpperCase();
-        const pinLast2 = (pincode || '00').slice(-2);
-        const year = '26';
-        const random = Math.floor(1000 + Math.random() * 9000); // 4 random digits
-        return `${stateCode}${pinLast2}${year}${random}`;
+        const stateMapping: Record<string, string> = {
+            'andhra pradesh': 'AP', 'arunachal pradesh': 'AR', 'assam': 'AS', 'bihar': 'BR',
+            'chhattisgarh': 'CG', 'goa': 'GA', 'gujarat': 'GJ', 'haryana': 'HR',
+            'himachal pradesh': 'HP', 'jharkhand': 'JH', 'karnataka': 'KA', 'kerala': 'KL',
+            'madhya pradesh': 'MP', 'maharashtra': 'MH', 'manipur': 'MN', 'meghalaya': 'ML',
+            'mizoram': 'MZ', 'nagaland': 'NL', 'odisha': 'OR', 'punjab': 'PB',
+            'rajasthan': 'RJ', 'sikkim': 'SK', 'tamil nadu': 'TN', 'telangana': 'TG',
+            'tripura': 'TR', 'uttar pradesh': 'UP', 'uttarakhand': 'UK', 'west bengal': 'WB',
+            'andaman and nicobar islands': 'AN', 'chandigarh': 'CH',
+            'dadra and nagar haveli': 'DN', 'daman and diu': 'DD', 'delhi': 'DL',
+            'jammu and kashmir': 'JK', 'ladakh': 'LA', 'lakshadweep': 'LD', 'puducherry': 'PY'
+        };
+
+        const normalizedState = (state || '').trim().toLowerCase();
+        let stateCode = stateMapping[normalizedState];
+        
+        // Fallback: If not found in mapping, strictly use the first 2 letters, default 'XX'
+        if (!stateCode) {
+            stateCode = (state || 'XX').replace(/[^a-zA-Z]/g, '').substring(0, 2).toUpperCase();
+            if (stateCode.length < 2) stateCode = stateCode.padEnd(2, 'X');
+        }
+
+        const year = new Date().getFullYear().toString().slice(-2);
+        
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        let randomAlphabets = '';
+        for (let i = 0; i < 3; i++) {
+            randomAlphabets += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+
+        // Generate 3 random digits: 000 to 999
+        const randomNumbers = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+
+        return `${stateCode}${year}${randomAlphabets}${randomNumbers}`;
     }
 
     async getArthaProfile(userId: string) {

@@ -1,9 +1,11 @@
 import { UserService } from './user.service';
 import { ResultService } from '../result/result.service';
+import { MockTestService } from '../mock-test/mock-test.service';
 export declare class UserController {
     private readonly userService;
     private readonly resultService;
-    constructor(userService: UserService, resultService: ResultService);
+    private readonly mockTestService;
+    constructor(userService: UserService, resultService: ResultService, mockTestService: MockTestService);
     findAll(): Promise<{
         id: number;
         firstName: string;
@@ -58,24 +60,20 @@ export declare class UserController {
             quantScore: number;
             verbalScore: number;
         };
-        recentResults: ({
-            test: {
-                id: number;
-                createdAt: Date;
-                name: string;
-                examId: number;
-            };
-        } & {
-            id: number;
-            createdAt: Date;
-            userId: number;
-            tier: number | null;
+        mockTests: {
             score: number;
-            subjectBreakdown: import("@prisma/client/runtime/library").JsonValue;
-            startTime: Date | null;
-            submitTime: Date | null;
-            testId: number;
-        })[];
+            createdAt: Date;
+            subjectBreakdown: any;
+        }[];
+        recentResults: {
+            id: string;
+            score: number;
+            percentage: number;
+            createdAt: Date;
+            test: {
+                name: any;
+            };
+        }[];
     }>;
     update(id: number, data: any): Promise<{
         id: number;

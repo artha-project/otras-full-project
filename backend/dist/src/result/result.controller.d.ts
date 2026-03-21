@@ -26,6 +26,10 @@ export declare class ResultController {
     }): Promise<any>;
     getUserResults(userId: number): Promise<({
         test: {
+            _count: {
+                questions: number;
+            };
+        } & {
             id: number;
             createdAt: Date;
             name: string;

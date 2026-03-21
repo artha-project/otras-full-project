@@ -17,8 +17,8 @@ export declare class CareerReadinessService {
         totalMarks: number;
         subjectBreakdown: import("@prisma/client/runtime/library").JsonValue;
         testId: number;
-        totalScore: number;
         correctAnswers: number;
+        totalScore: number;
         wrongAnswers: number;
         negativeMarks: number;
     }>;
@@ -36,8 +36,8 @@ export declare class CareerReadinessService {
         totalMarks: number;
         subjectBreakdown: import("@prisma/client/runtime/library").JsonValue;
         testId: number;
-        totalScore: number;
         correctAnswers: number;
+        totalScore: number;
         wrongAnswers: number;
         negativeMarks: number;
     }) | null>;

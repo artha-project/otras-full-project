@@ -21,18 +21,53 @@ export class MockTestService {
     });
   }
 
-  async startAttempt(otrId: string, mockTestId: number) {
+  async startAttempt(otrId: string, mockTestOrTestId: number) {
     const user = await this.prisma.user.findUnique({ where: { otrId } });
     if (!user) throw new NotFoundException('User with this OTR ID not found');
 
-    return this.prisma.mockTestAttempt.create({
-        data: {
-            otrId,
-            mockTestId,
-            score: 0,
-            totalMarks: 0,
-            startTime: new Date()
+    // 1. Try to find a direct MockTest
+    let mockTest = await this.prisma.mockTest.findUnique({ where: { id: mockTestOrTestId } });
+
+    // 2. If not found, it might be a Test ID from an Exam
+    if (!mockTest) {
+      const test = await this.prisma.test.findUnique({ where: { id: mockTestOrTestId } });
+      if (test) {
+        // Find or create "Official Assessment" MockTest for this exam
+        const categoryName = "Official Assessment";
+        let category = await this.prisma.mockTestCategory.findUnique({ where: { name: categoryName } });
+        if (!category) {
+          category = await this.prisma.mockTestCategory.create({ data: { name: categoryName } });
         }
+
+        mockTest = await this.prisma.mockTest.findFirst({
+          where: { examId: test.examId, categoryId: category.id }
+        });
+
+        if (!mockTest) {
+          const exam = await this.prisma.exam.findUnique({ where: { id: test.examId } });
+          mockTest = await this.prisma.mockTest.create({
+            data: {
+              title: `${exam?.name || 'Exam'} - Official Assessment`,
+              duration: 60,
+              sectionType: "Full Length",
+              categoryId: category.id,
+              examId: test.examId
+            }
+          });
+        }
+      }
+    }
+
+    if (!mockTest) throw new NotFoundException('MockTest or Test not found');
+
+    return this.prisma.mockTestAttempt.create({
+      data: {
+        otrId,
+        mockTestId: mockTest.id,
+        score: 0,
+        totalMarks: 0,
+        startTime: new Date()
+      }
     });
   }
 
@@ -96,7 +131,7 @@ export class MockTestService {
     };
   }
 
-  async submitExamAttempt(dto: { otrId: string, examId: number, score: number, totalMarks: number, attemptId?: number }) {
+  async submitExamAttempt(dto: { otrId: string, examId: number, score: number, totalMarks: number, attemptId?: number, correctAnswers?: number, subjectBreakdown?: any }) {
     this.logger.log(`Antigravity Debug - submitExamAttempt called with: ${JSON.stringify(dto)}`);
     // 1. Ensure user exists
     const user = await this.prisma.user.findUnique({ where: { otrId: dto.otrId } });
@@ -142,6 +177,8 @@ export class MockTestService {
             data: {
                 score: dto.score,
                 totalMarks: dto.totalMarks,
+                correctAnswers: dto.correctAnswers ?? null,
+                subjectBreakdown: dto.subjectBreakdown ?? undefined,
                 submitTime: new Date()
             }
         });
@@ -153,9 +190,30 @@ export class MockTestService {
         mockTestId: mockTest.id,
         score: dto.score,
         totalMarks: dto.totalMarks,
+        correctAnswers: dto.correctAnswers ?? null,
+        subjectBreakdown: dto.subjectBreakdown ?? undefined,
         startTime: new Date(),
         submitTime: new Date()
       }
     });
+  }
+
+  async getUserMockAttempts(otrId: string) {
+    // Only return SUBMITTED attempts (submitTime is set at submission)
+    // score > 0 is an additional safety net for tests that didn't answer any questions
+    const attempts = await this.prisma.mockTestAttempt.findMany({
+      where: {
+        otrId,
+        OR: [
+          { submitTime: { not: null } },
+          { score: { gt: 0 } }          // Catch attempts submitted via submitExamAttempt with real scores
+        ]
+      },
+      include: { mockTest: true },
+      orderBy: { attemptedAt: 'desc' },
+      take: 30
+    });
+    this.logger.log(`getUserMockAttempts: Found ${attempts.length} submitted attempts for ${otrId}`);
+    return attempts;
   }
 }

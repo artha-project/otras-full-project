@@ -27,8 +27,10 @@ export declare class MockTestController {
         otrId: string;
         score: number;
         totalMarks: number;
+        subjectBreakdown: import("@prisma/client/runtime/library").JsonValue | null;
         startTime: Date | null;
         submitTime: Date | null;
+        correctAnswers: number | null;
         attemptedAt: Date;
         mockTestId: number;
     }>;
@@ -42,8 +44,10 @@ export declare class MockTestController {
         otrId: string;
         score: number;
         totalMarks: number;
+        subjectBreakdown: import("@prisma/client/runtime/library").JsonValue | null;
         startTime: Date | null;
         submitTime: Date | null;
+        correctAnswers: number | null;
         attemptedAt: Date;
         mockTestId: number;
     }>;
@@ -53,13 +57,17 @@ export declare class MockTestController {
         score: number;
         totalMarks: number;
         attemptId?: number;
+        correctAnswers?: number;
+        subjectBreakdown?: any;
     }): Promise<{
         id: number;
         otrId: string;
         score: number;
         totalMarks: number;
+        subjectBreakdown: import("@prisma/client/runtime/library").JsonValue | null;
         startTime: Date | null;
         submitTime: Date | null;
+        correctAnswers: number | null;
         attemptedAt: Date;
         mockTestId: number;
     }>;
@@ -86,8 +94,10 @@ export declare class MockTestController {
         otrId: string;
         score: number;
         totalMarks: number;
+        subjectBreakdown: import("@prisma/client/runtime/library").JsonValue | null;
         startTime: Date | null;
         submitTime: Date | null;
+        correctAnswers: number | null;
         attemptedAt: Date;
         mockTestId: number;
     }) | null>;

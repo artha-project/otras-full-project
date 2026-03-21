@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { PrismaClient } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
@@ -9,6 +10,7 @@ async function main() {
   // 1. Cleanup
   console.log('Cleaning up database...');
   await prisma.intelligenceFeedback.deleteMany({});
+  await prisma.arthaAssessment.deleteMany({});
   await prisma.arthaProfile.deleteMany({});
   await prisma.studyActivity.deleteMany({});
   await prisma.studyPlanDay.deleteMany({});
@@ -39,9 +41,18 @@ async function main() {
       firstName: 'Test',
       lastName: 'User',
       email: 'testuser@example.com',
-      password: 'password123', // In a real app, this should be hashed
+      password: await bcrypt.hash('password123', 10),
       otrId: 'UP123456',
       referralCode: 'REF123456',
+    }
+  });
+
+  console.log('Creating test admin...');
+  await prisma.admin.create({
+    data: {
+      username: 'admin',
+      email: 'admin@otras.com',
+      password: await bcrypt.hash('admin123', 10),
     }
   });
 

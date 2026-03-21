@@ -14,14 +14,18 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
 const common_1 = require("@nestjs/common");
+const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
 const user_service_1 = require("./user.service");
 const result_service_1 = require("../result/result.service");
+const mock_test_service_1 = require("../mock-test/mock-test.service");
 let UserController = class UserController {
     userService;
     resultService;
-    constructor(userService, resultService) {
+    mockTestService;
+    constructor(userService, resultService, mockTestService) {
         this.userService = userService;
         this.resultService = resultService;
+        this.mockTestService = mockTestService;
     }
     async findAll() {
         return this.userService.findAll();
@@ -35,6 +39,34 @@ let UserController = class UserController {
             throw new common_1.NotFoundException('User not found');
         }
         const results = await this.resultService.getUserResults(id);
+        const mockAttempts = await this.mockTestService.getUserMockAttempts(user.otrId);
+        const mergedAttempts = [
+            ...results.map(r => {
+                const totalQs = r.test?._count?.questions || 1;
+                return {
+                    id: `res_${r.id}`,
+                    score: r.score,
+                    percentage: Math.min(Math.round((r.score / totalQs) * 100), 100),
+                    createdAt: r.createdAt,
+                    testName: r.test?.name || 'Artha Assessment',
+                    type: 'artha',
+                    subjectBreakdown: r.subjectBreakdown
+                };
+            }),
+            ...mockAttempts.map(m => ({
+                id: `mock_${m.id}`,
+                score: m.score,
+                percentage: m.totalMarks > 0
+                    ? (m.correctAnswers != null
+                        ? Math.min(Math.round((m.correctAnswers / m.totalMarks) * 100), 100)
+                        : Math.max(0, Math.min(Math.round((m.score / m.totalMarks) * 100), 100)))
+                    : 0,
+                createdAt: m.attemptedAt,
+                testName: m.mockTest?.title || 'Official Mock Test',
+                type: 'mock',
+                subjectBreakdown: m.subjectBreakdown
+            }))
+        ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         const arthaProfile = await this.userService.getArthaProfile(id.toString());
         let readinessIndex = 0;
         if (arthaProfile && arthaProfile.readinessIndex > 0) {
@@ -44,10 +76,8 @@ let UserController = class UserController {
             readinessIndex = Math.round(arthaProfile.percentile);
         }
         else {
-            const latestResult = results[0];
-            const totalQs = latestResult?.test?.questions?.length || 1;
-            const latestScore = latestResult ? (latestResult.score / totalQs) * 100 : 0;
-            readinessIndex = Math.min(Math.round(latestScore), 100);
+            const latestAttempt = mergedAttempts[0];
+            readinessIndex = latestAttempt ? latestAttempt.percentage : 0;
         }
         return {
             user: {
@@ -58,14 +88,25 @@ let UserController = class UserController {
             },
             stats: {
                 readinessIndex,
-                testsCompleted: results.length,
-                recentTend: results.slice(0, 5).map(r => r.score),
+                testsCompleted: mergedAttempts.length,
+                recentTend: mergedAttempts.slice(0, 7).reverse().map(r => r.percentage),
                 percentile: arthaProfile?.percentile || 0,
                 logicalScore: arthaProfile?.logicalScore || 0,
                 quantScore: arthaProfile?.quantScore || 0,
                 verbalScore: arthaProfile?.verbalScore || 0,
             },
-            recentResults: results.slice(0, 3)
+            mockTests: mergedAttempts.map(a => ({
+                score: a.percentage,
+                createdAt: a.createdAt,
+                subjectBreakdown: a.subjectBreakdown
+            })),
+            recentResults: mergedAttempts.slice(0, 3).map(a => ({
+                id: a.id,
+                score: a.score,
+                percentage: a.percentage,
+                createdAt: a.createdAt,
+                test: { name: a.testName }
+            }))
         };
     }
     async update(id, data) {
@@ -93,6 +134,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "findOne", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Get)(':id/dashboard'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
@@ -124,6 +166,7 @@ __decorate([
 exports.UserController = UserController = __decorate([
     (0, common_1.Controller)('users'),
     __metadata("design:paramtypes", [user_service_1.UserService,
-        result_service_1.ResultService])
+        result_service_1.ResultService,
+        mock_test_service_1.MockTestService])
 ], UserController);
 //# sourceMappingURL=user.controller.js.map

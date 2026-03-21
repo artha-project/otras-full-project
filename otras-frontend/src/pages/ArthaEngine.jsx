@@ -269,7 +269,7 @@ export default function ArthaEngine({ user }) {
         </div>
 
       </div>
-      
+
       {/* RECENT REPORTS SECTION */}
       {tierStatus?.recentReports && tierStatus.recentReports.length > 0 && (
         <div className="mt-10 animate-fade-in">
@@ -283,8 +283,8 @@ export default function ArthaEngine({ user }) {
                 <summary className="p-5 cursor-pointer list-none flex items-center justify-between hover:bg-slate-50 transition-colors">
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 rounded-xl bg-blue-50 flex flex-col items-center justify-center text-blue-600 border border-blue-100">
-                       <span className="text-[10px] uppercase font-bold leading-none">Tier</span>
-                       <span className="text-xl font-black leading-none">{report.tier}</span>
+                      <span className="text-[10px] uppercase font-bold leading-none">Tier</span>
+                      <span className="text-xl font-black leading-none">{report.tier}</span>
                     </div>
                     <div>
                       <h4 className="font-bold text-slate-800 text-lg">
@@ -297,12 +297,12 @@ export default function ArthaEngine({ user }) {
                   </div>
                   <div className="flex items-center gap-8">
                     <div className="hidden sm:block text-center px-4 border-r border-slate-100">
-                       <p className="label text-[10px] uppercase opacity-60">Readiness</p>
-                       <p className="text-xl font-bold text-blue-600">{Math.round(report.readinessIndex || 0)}%</p>
+                      <p className="label text-[10px] uppercase opacity-60">Readiness</p>
+                      <p className="text-xl font-bold text-blue-600">{Math.round(report.readinessIndex || 0)}%</p>
                     </div>
                     <div className="hidden sm:block text-center px-4">
-                       <p className="label text-[10px] uppercase opacity-60">Percentile</p>
-                       <p className="text-xl font-bold text-slate-700">{Math.round(report.percentile || 0)}</p>
+                      <p className="label text-[10px] uppercase opacity-60">Percentile</p>
+                      <p className="text-xl font-bold text-slate-700">{Math.round(report.percentile || 0)}</p>
                     </div>
                     <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center group-open:rotate-180 transition-transform duration-300">
                       <ChevronDown size={18} className="text-slate-500" />
@@ -310,49 +310,49 @@ export default function ArthaEngine({ user }) {
                   </div>
                 </summary>
                 <div className="p-8 border-t border-slate-100 bg-slate-50/30">
-                   <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div className="p-4 bg-white rounded-xl shadow-sm border border-slate-100">
+                      <p className="label text-[10px] uppercase text-slate-400 mb-1">Score Obtained</p>
+                      <p className="text-2xl font-bold text-slate-800">{report.score}/{report.totalMarks}</p>
+                    </div>
+                    <div className="p-4 bg-white rounded-xl shadow-sm border border-slate-100">
+                      <p className="label text-[10px] uppercase text-slate-400 mb-1">Accuracy Rate</p>
+                      <p className="text-2xl font-bold text-slate-800">{Math.round(report.accuracy || 0)}%</p>
+                    </div>
+                    {report.speed !== null && report.tier === 3 && (
                       <div className="p-4 bg-white rounded-xl shadow-sm border border-slate-100">
-                         <p className="label text-[10px] uppercase text-slate-400 mb-1">Score Obtained</p>
-                         <p className="text-2xl font-bold text-slate-800">{report.score}/{report.totalMarks}</p>
+                        <p className="label text-[10px] uppercase text-slate-400 mb-1">Solving Speed</p>
+                        <p className="text-2xl font-bold text-slate-800">{report.speed} <small className="text-xs font-normal">s/q</small></p>
                       </div>
+                    )}
+                    {report.consistency !== null && report.tier === 3 && (
                       <div className="p-4 bg-white rounded-xl shadow-sm border border-slate-100">
-                         <p className="label text-[10px] uppercase text-slate-400 mb-1">Accuracy Rate</p>
-                         <p className="text-2xl font-bold text-slate-800">{Math.round(report.accuracy || 0)}%</p>
+                        <p className="label text-[10px] uppercase text-slate-400 mb-1">Consistency</p>
+                        <p className="text-2xl font-bold text-slate-800">{Math.round(report.consistency)}%</p>
                       </div>
-                      {report.speed !== null && report.tier === 3 && (
-                        <div className="p-4 bg-white rounded-xl shadow-sm border border-slate-100">
-                          <p className="label text-[10px] uppercase text-slate-400 mb-1">Solving Speed</p>
-                          <p className="text-2xl font-bold text-slate-800">{report.speed} <small className="text-xs font-normal">s/q</small></p>
-                        </div>
-                      )}
-                      {report.consistency !== null && report.tier === 3 && (
-                        <div className="p-4 bg-white rounded-xl shadow-sm border border-slate-100">
-                          <p className="label text-[10px] uppercase text-slate-400 mb-1">Consistency</p>
-                          <p className="text-2xl font-bold text-slate-800">{Math.round(report.consistency)}%</p>
-                        </div>
-                      )}
-                   </div>
-                   
-                   {report.subjectBreakdown && (
-                     <div className="mt-6 p-4 bg-blue-50/50 rounded-xl border border-blue-100">
-                        <p className="label text-[10px] uppercase text-blue-600 mb-3 font-bold">Performance Breakdown</p>
-                        <div className="flex flex-wrap gap-3">
-                           {Object.entries(report.subjectBreakdown).map(([subject, score]) => (
-                             <div key={subject} className="px-3 py-1 bg-white rounded-full text-sm shadow-sm border border-blue-100 flex items-center gap-2">
-                                <span className="capitalize font-medium text-slate-700">{subject}:</span>
-                                <span className="font-bold text-blue-600">{Number(score)}%</span>
-                             </div>
-                           ))}
-                        </div>
-                     </div>
-                   )}
+                    )}
+                  </div>
+
+                  {report.subjectBreakdown && (
+                    <div className="mt-6 p-4 bg-blue-50/50 rounded-xl border border-blue-100">
+                      <p className="label text-[10px] uppercase text-blue-600 mb-3 font-bold">Performance Breakdown</p>
+                      <div className="flex flex-wrap gap-3">
+                        {Object.entries(report.subjectBreakdown).map(([subject, score]) => (
+                          <div key={subject} className="px-3 py-1 bg-white rounded-full text-sm shadow-sm border border-blue-100 flex items-center gap-2">
+                            <span className="capitalize font-medium text-slate-700">{subject}:</span>
+                            <span className="font-bold text-blue-600">{Number(score)}%</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </details>
             ))}
           </div>
         </div>
       )}
-      
+
       {/* AI INTELLIGENCE REPORT */}
       {tierStatus?.feedback && (
         <div className="mt-10">
@@ -407,12 +407,7 @@ export default function ArthaEngine({ user }) {
             {tierStatus?.readinessIndex ? `${Math.round(tierStatus.readinessIndex)}%` : "0%"}
           </h3>
 
-          <span
-            className="inline-block mt-3 px-4 py-1 rounded-full text-sm"
-            style={{ background: "rgba(255,255,255,0.2)" }}
-          >
-            {t("incomplete")}
-          </span>
+
         </div>
       </div>
     </div>

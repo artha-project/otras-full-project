@@ -180,9 +180,9 @@ async function runOpenAI(prompt, options) {
             { role: "user", content: prompt }
         ],
         temperature: Number(process.env.OPENAI_TEMPERATURE) || 0.2,
-        max_tokens: options.maxTokens || Number(process.env.AI_MAX_TOKENS) || 3000,
+        max_tokens: options.maxTokens || Number(process.env.AI_MAX_TOKENS) || 6000,
         response_format: { type: "json_object" }
-    }, { timeout: 30000 });
+    }, { timeout: 90000 });
     const content = response.choices?.[0]?.message?.content || "";
     logger.log(`AI Service: Output length: ${content.length}`);
     if (response.choices?.[0]?.finish_reason === 'length') {
@@ -198,11 +198,11 @@ async function runMistral(prompt, options) {
             { role: "user", content: prompt }
         ],
         temperature: Number(process.env.OPENAI_TEMPERATURE) || 0.2,
-        max_tokens: options.maxTokens || Number(process.env.AI_MAX_TOKENS) || 3000,
+        max_tokens: options.maxTokens || Number(process.env.AI_MAX_TOKENS) || 6000,
         response_format: { type: "json_object" }
     }, {
         headers: { Authorization: `Bearer ${process.env.MISTRAL_API_KEY}` },
-        timeout: 30000
+        timeout: 60000
     });
     const content = response.data?.choices?.[0]?.message?.content || "";
     logger.log(`AI Service: Output length: ${content.length}`);

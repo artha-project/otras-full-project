@@ -10,8 +10,8 @@ export default registerAs('mistral', () => ({
 
   model: process.env.MISTRAL_MODEL || 'mistral-medium',
 
-  maxTokens: parseInt(process.env.AI_MAX_TOKENS || '2000'),
+  maxTokens: parseInt(process.env.AI_MAX_TOKENS || '6000'),
 
-  timeout: parseInt(process.env.AI_TIMEOUT || '30000'),
+  timeout: parseInt(process.env.AI_TIMEOUT || '90000'),
 
 }))

@@ -112,7 +112,13 @@ export class ResultService {
         return this.prisma.result.findMany({
             where: { userId },
             include: {
-                test: true
+                test: {
+                    include: {
+                        _count: {
+                            select: { questions: true }
+                        }
+                    }
+                }
             },
             take: 20,
             orderBy: { createdAt: 'desc' },

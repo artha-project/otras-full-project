@@ -12,6 +12,7 @@ import {
 import ScheduleItem from "../components/ScheduleItem";
 import axios from "axios";
 import { useTranslation } from "../hooks/useTranslation";
+import { getSavedPlans } from "../services/studyPlanApi";
 
 export default function Dashboard({ user: propUser }) {
 
@@ -30,8 +31,11 @@ export default function Dashboard({ user: propUser }) {
 
   const fetchDashboardData = async (userId) => {
     try {
-      const resp = await axios.get(`http://localhost:4000/users/${userId}/dashboard`);
-      setData(resp.data);
+      const [resp, plans] = await Promise.all([
+        axios.get(`http://localhost:4000/users/${userId}/dashboard`),
+        getSavedPlans(userId).catch(() => [])
+      ]);
+      setData({ ...resp.data, studyPlans: plans || [] });
     } catch (err) {
       console.error("Failed to fetch dashboard data", err);
     } finally {
@@ -43,9 +47,67 @@ export default function Dashboard({ user: propUser }) {
 
   const stats =
     data?.stats ||
-    { readinessIndex: 0, testsCompleted: 0, recentTend: [0, 0, 0, 0], percentile: 0, logicalScore: 0, quantScore: 0, verbalScore: 0 };
+    { readinessIndex: 0, testsCompleted: 0, recentTend: [], percentile: 0, logicalScore: 0, quantScore: 0, verbalScore: 0 };
 
   console.log("ARTHA: Rendering AI feedback in report", stats);
+
+  // 1. Data Source: Fetch actual mock tests (submitted only, from backend)
+  const mockTests = data?.mockTests || [];
+
+  // 2. Generate Last 7 Days Chronologically (Ending Today)
+  const last7Days = Array.from({ length: 7 }).map((_, i) => {
+    const date = new Date();
+    date.setDate(date.getDate() - (6 - i)); // 6 days ago -> today
+
+    const dayLabel = date.toLocaleDateString('en-US', { weekday: 'short' });
+
+    // Find tests written on this specific calendar date
+    const dayTests = mockTests.filter(test => {
+      const testDate = new Date(test.createdAt);
+      return testDate.toDateString() === date.toDateString();
+    });
+
+    const avgScore = dayTests.length
+      ? Math.round(dayTests.reduce((sum, t) => sum + Number(t.score || 0), 0) / dayTests.length)
+      : 0;
+
+    return {
+      label: dayLabel,
+      score: avgScore
+    };
+  });
+
+  // Debug logs
+  console.log("Raw Mock Tests:", mockTests);
+  console.log("Last 7 Days Data:", last7Days);
+
+  const hasData = mockTests.length > 0;
+  const trendLabels = last7Days.map(d => d.label);
+  const trendScores = last7Days.map(d => d.score);
+  
+  // Dynamic scaling: find the max score in the dataset (min 10 so it doesn't zoom too much on tiny numbers)
+  const maxScore = Math.max(...trendScores, 10); 
+
+  const pathPoints = trendScores.map((val, i) => {
+    const x = (i / (trendScores.length - 1)) * 400;
+    // Scale vertically using the dynamic maxScore, with a 10% padding at top
+    // 80 is the height range we draw in (SVG height is 100)
+    const y = 100 - (val / maxScore) * 80;
+    return `${x},${y}`;
+  });
+
+  const trendLinePath = hasData ? `M${pathPoints.join(" L")}` : "";
+  const trendAreaPath = hasData ? `${trendLinePath} L400,100 L0,100 Z` : "";
+
+  // Daily Study Data
+  let dailyTasks = [];
+  if (data?.studyPlans && data.studyPlans.length > 0) {
+    const firstPlan = data.studyPlans[0];
+    if (firstPlan.days && firstPlan.days.length > 0) {
+      const activeDay = firstPlan.days.find(d => d.activities?.some(a => !a.completed)) || firstPlan.days[0];
+      dailyTasks = (activeDay.activities || []).slice(0, 3);
+    }
+  }
 
   return (
     <div className="space-y-5">
@@ -61,7 +123,7 @@ export default function Dashboard({ user: propUser }) {
 
         <div>
 
-          <h1 className="text-3xl font-bold text-blue-800 mb-1">
+          <h1 className="text-3xl font-bold text-blue-800 mb-1 capitalize">
             {t("welcome")}, {user.firstName || "Candidate"}.
           </h1>
 
@@ -220,42 +282,44 @@ export default function Dashboard({ user: propUser }) {
               : t("startMockTests")}
           </p>
 
-          <div className="relative h-32">
+          <div className="relative h-32 flex flex-col justify-center">
+            {hasData ? (
+              <>
+                <svg viewBox="0 0 400 100" className="w-full h-full">
+                  <defs>
+                    <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.2" />
+                      <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
+                    </linearGradient>
+                  </defs>
+                  <path
+                    d={trendLinePath}
+                    fill="none"
+                    stroke="#3b82f6"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d={trendAreaPath}
+                    fill="url(#grad)"
+                  />
+                </svg>
 
-            <svg viewBox="0 0 400 100" className="w-full h-full">
-
-              <defs>
-                <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.2" />
-                  <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
-                </linearGradient>
-              </defs>
-
-              <path
-                d="M0,80 C50,70 80,60 120,55 C160,50 180,40 220,35 C260,30 300,25 340,20 C370,17 390,15 400,14"
-                fill="none"
-                stroke="#3b82f6"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-              />
-
-              <path
-                d="M0,80 C50,70 80,60 120,55 C160,50 180,40 220,35 C260,30 300,25 340,20 C370,17 390,15 400,14 L400,100 L0,100 Z"
-                fill="url(#grad)"
-              />
-
-            </svg>
-
-            <div className="absolute bottom-0 left-0 right-0 flex justify-between px-2">
-
-              {["W1", "W2", "W3", "W4", "W5", "W6", "W7"].map((w) => (
-                <span key={w} className="text-xs text-slate-400">
-                  {w}
-                </span>
-              ))}
-
-            </div>
-
+                <div className="absolute bottom-0 left-0 right-0 flex justify-between px-2">
+                  {trendLabels.map((label, i) => (
+                    <span key={i} className="text-xs text-slate-400">
+                      {label}
+                    </span>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-slate-400 text-sm font-medium">{t("noDataAvailable") || "No performance data available yet"}</p>
+                <p className="text-slate-300 text-xs mt-1">{t("completeMockToSeeTrend") || "Complete a mock test to see your trend"}</p>
+              </div>
+            )}
           </div>
 
         </div>
@@ -278,30 +342,23 @@ export default function Dashboard({ user: propUser }) {
 
           <div>
 
-            <ScheduleItem
-              time="09:00 AM"
-              task="Quant Speed Test (Algebra Focus)"
-              status="Pending"
-              statusColor="text-orange-500"
-            />
-
-            <ScheduleItem
-              time="11:30 AM"
-              task="Static GK Revision - Rivers of India"
-              status="Upcoming"
-              statusColor="text-blue-500"
-            />
-
-            <ScheduleItem
-              time="02:00 PM"
-              task="Full Mock #15 Analysis"
-              status="Incomplete"
-              statusColor="text-slate-500"
-            />
+            {dailyTasks.length > 0 ? (
+              dailyTasks.map((task, idx) => (
+                <ScheduleItem
+                  key={idx}
+                  time={task.timeSlot}
+                  task={task.description}
+                  status={task.completed ? "Completed" : task.missed ? "Missed" : "Pending"}
+                  statusColor={task.completed ? "text-green-500" : task.missed ? "text-red-500" : "text-blue-500"}
+                />
+              ))
+            ) : (
+              <p className="text-sm text-slate-500 text-center py-4">{t("noStudyPlanFound") || "No tasks available. Create a study plan."}</p>
+            )}
 
           </div>
 
-          <button 
+          <button
             onClick={() => navigate("/studyplan")}
             className="mt-3 text-blue-600 text-sm font-semibold hover:underline w-full text-right"
           >

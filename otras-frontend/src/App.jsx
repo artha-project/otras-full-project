@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Sidebar from './components/Sidebar';
 import TopHeader from './components/TopHeader';
@@ -23,6 +23,19 @@ import ExamInstructions from './pages/ExamInstructions';
 import ArthaTest from './pages/ArthaTest';
 import ReferEarn from './pages/ReferEarn';
 import TierAssessment from './pages/TierAssessment';
+import LandingPage from './pages/LandingPage';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import ForgotPassword from './pages/ForgotPassword';
+
+// Set up Axios Interceptor for JWT tokens
+axios.interceptors.request.use(config => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
 export default function App() {
   const [collapsed, setCollapsed] = useState(false);
@@ -32,43 +45,53 @@ export default function App() {
   });
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isAuthPage = ['/', '/login', '/signup', '/forgot-password'].includes(location.pathname);
 
   useEffect(() => {
     if (user?.id) {
       axios.get(`http://localhost:4000/users/${user.id}/dashboard`)
         .catch(err => {
-          if (err.response?.status === 404) {
-            console.warn('Stale user session detected. Logging out...');
+          if (err.response?.status === 401 || err.response?.status === 404) {
+            console.warn('Session invalid or stale. Logging out...');
             logout();
           }
         });
     }
-  }, []);
+  }, [user?.id]);
 
   const handleAuthSuccess = (userData) => {
     setUser(userData);
-    navigate('/dashboard');
   };
 
   const logout = () => {
     localStorage.removeItem('user');
     localStorage.removeItem('token');
     setUser(null);
-    navigate('/dashboard');
+    navigate('/login');
   };
 
   return (
     <div className="font-sans">
-      <Sidebar
-        collapsed={collapsed}
-        setCollapsed={setCollapsed}
-        user={user}
-        logout={logout}
-      />
-      <TopHeader collapsed={collapsed} setCollapsed={setCollapsed} user={user} />
-      <PageContainer collapsed={collapsed}>
+      {!isAuthPage && (
+        <>
+          <Sidebar
+            collapsed={collapsed}
+            setCollapsed={setCollapsed}
+            user={user}
+            logout={logout}
+          />
+          <TopHeader collapsed={collapsed} setCollapsed={setCollapsed} user={user} />
+        </>
+      )}
+      <PageContainer collapsed={collapsed} isAuthPage={isAuthPage}>
         <Routes>
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<Login onAuthSuccess={handleAuthSuccess} />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          
           <Route path="/dashboard" element={<Dashboard user={user} />} />
           <Route path="/eligibility" element={<Eligibility user={user} />} />
           <Route path="/artha" element={<ArthaEngine user={user} />} />
@@ -88,7 +111,8 @@ export default function App() {
           <Route path="/exam-instructions" element={<ExamInstructions />} />
           <Route path="/artha-test" element={<ArthaTest user={user} />} />
           <Route path="/tier-assessment/:tier" element={<TierAssessment user={user} />} />
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          
+          <Route path="*" element={<Navigate to={isAuthPage ? "/" : "/dashboard"} replace />} />
         </Routes>
       </PageContainer>
     </div>

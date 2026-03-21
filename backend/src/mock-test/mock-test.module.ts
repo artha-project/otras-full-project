@@ -7,5 +7,6 @@ import { PrismaModule } from '../prisma/prisma.module';
   imports: [PrismaModule],
   controllers: [MockTestController],
   providers: [MockTestService],
+  exports: [MockTestService],
 })
 export class MockTestModule {}

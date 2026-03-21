@@ -16,6 +16,10 @@ export declare class ResultService {
     calculateAndSave(userId: number, testId: number, answers: any[], tier?: number, resultId?: number): Promise<any>;
     getUserResults(userId: number): Promise<({
         test: {
+            _count: {
+                questions: number;
+            };
+        } & {
             id: number;
             createdAt: Date;
             name: string;

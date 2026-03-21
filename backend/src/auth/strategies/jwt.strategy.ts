@@ -13,11 +13,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    console.log('JWT Strategy: Validating payload:', payload);
     if (!payload.sub) {
-        console.error('JWT Strategy: Missing sub in payload');
         return null;
     }
-    return { id: payload.sub, email: payload.email };
+    return { id: payload.sub, email: payload.email, role: payload.role || 'user' };
   }
 }

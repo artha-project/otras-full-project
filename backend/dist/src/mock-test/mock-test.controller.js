@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MockTestController = void 0;
 const common_1 = require("@nestjs/common");
+const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
 const mock_test_service_1 = require("./mock-test.service");
 let MockTestController = class MockTestController {
     mockTestService;
@@ -51,6 +52,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], MockTestController.prototype, "findAll", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Post)('start-attempt'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -58,6 +60,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], MockTestController.prototype, "startAttempt", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Post)('attempts'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -65,6 +68,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], MockTestController.prototype, "submitAttempt", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Post)('exam-attempts'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),

@@ -57,12 +57,12 @@ export async function runAIService(
           // Some AI models return { "Analysis": { "expectedField": "..." } }
           const rootKeys = Object.keys(parsed);
           if (rootKeys.length === 1 && typeof parsed[rootKeys[0]] === 'object' && !Array.isArray(parsed[rootKeys[0]])) {
-             const nested = parsed[rootKeys[0]];
-             const nestedKeys = Object.keys(nested);
-             if (options.expectedFields.some(f => nestedKeys.includes(f))) {
-               logger.warn(`Heuristic: Detected nested JSON. Flattening from key "${rootKeys[0]}"`);
-               parsed = { ...parsed, ...nested };
-             }
+            const nested = parsed[rootKeys[0]];
+            const nestedKeys = Object.keys(nested);
+            if (options.expectedFields.some(f => nestedKeys.includes(f))) {
+              logger.warn(`Heuristic: Detected nested JSON. Flattening from key "${rootKeys[0]}"`);
+              parsed = { ...parsed, ...nested };
+            }
           }
 
           const missing = options.expectedFields.filter(f => parsed[f] === undefined);
@@ -80,8 +80,8 @@ FIX:
           // Force all expected fields to be strings (flatten if needed), but PRESERVE arrays
           options.expectedFields.forEach(f => {
             if (typeof parsed[f] !== 'string' && !Array.isArray(parsed[f])) {
-               logger.warn(`Field ${f} is NOT a string or array. Flattening nested object.`);
-               parsed[f] = typeof parsed[f] === 'object' ? JSON.stringify(parsed[f]) : String(parsed[f]);
+              logger.warn(`Field ${f} is NOT a string or array. Flattening nested object.`);
+              parsed[f] = typeof parsed[f] === 'object' ? JSON.stringify(parsed[f]) : String(parsed[f]);
             }
           });
         }
@@ -227,9 +227,9 @@ async function runOpenAI(prompt: string, options: AIServiceOptions) {
       { role: "user", content: prompt }
     ],
     temperature: Number(process.env.OPENAI_TEMPERATURE) || 0.2,
-    max_tokens: options.maxTokens || Number(process.env.AI_MAX_TOKENS) || 3000,
+    max_tokens: options.maxTokens || Number(process.env.AI_MAX_TOKENS) || 6000,
     response_format: { type: "json_object" }
-  }, { timeout: 30000 }); // 30s for LLM to respond
+  }, { timeout: 90000 }); // 30s for LLM to respond
 
   const content = response.choices?.[0]?.message?.content || "";
   logger.log(`AI Service: Output length: ${content.length}`);
@@ -249,12 +249,12 @@ async function runMistral(prompt: string, options: AIServiceOptions) {
         { role: "user", content: prompt }
       ],
       temperature: Number(process.env.OPENAI_TEMPERATURE) || 0.2,
-      max_tokens: options.maxTokens || Number(process.env.AI_MAX_TOKENS) || 3000,
+      max_tokens: options.maxTokens || Number(process.env.AI_MAX_TOKENS) || 6000,
       response_format: { type: "json_object" }
     },
     {
       headers: { Authorization: `Bearer ${process.env.MISTRAL_API_KEY}` },
-      timeout: 30000 // 30s for LLM to respond
+      timeout: 60000 // 30s for LLM to respond
     }
   );
 
@@ -273,7 +273,7 @@ function sanitizeResponse(raw: string): string {
   if (!raw) return "";
 
   let clean = raw.trim();
-  
+
   // Remove markdown blocks if present
   clean = clean.replace(/```json/g, "").replace(/```/g, "");
 

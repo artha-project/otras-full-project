@@ -36,7 +36,7 @@ export default function TopHeader({ collapsed, setCollapsed, user }) {
               <span className="text-xs font-bold text-slate-500 uppercase tracking-widest hidden sm:inline">
                 {t("activeCandidate")}
               </span>
-              <span className="text-sm font-bold text-slate-800">
+              <span className="text-sm font-bold text-slate-800 capitalize">
                 {user.firstName} {user.lastName}
               </span>
             </div>

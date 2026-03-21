@@ -32,14 +32,42 @@ let MockTestService = MockTestService_1 = class MockTestService {
             include: { category: true }
         });
     }
-    async startAttempt(otrId, mockTestId) {
+    async startAttempt(otrId, mockTestOrTestId) {
         const user = await this.prisma.user.findUnique({ where: { otrId } });
         if (!user)
             throw new common_1.NotFoundException('User with this OTR ID not found');
+        let mockTest = await this.prisma.mockTest.findUnique({ where: { id: mockTestOrTestId } });
+        if (!mockTest) {
+            const test = await this.prisma.test.findUnique({ where: { id: mockTestOrTestId } });
+            if (test) {
+                const categoryName = "Official Assessment";
+                let category = await this.prisma.mockTestCategory.findUnique({ where: { name: categoryName } });
+                if (!category) {
+                    category = await this.prisma.mockTestCategory.create({ data: { name: categoryName } });
+                }
+                mockTest = await this.prisma.mockTest.findFirst({
+                    where: { examId: test.examId, categoryId: category.id }
+                });
+                if (!mockTest) {
+                    const exam = await this.prisma.exam.findUnique({ where: { id: test.examId } });
+                    mockTest = await this.prisma.mockTest.create({
+                        data: {
+                            title: `${exam?.name || 'Exam'} - Official Assessment`,
+                            duration: 60,
+                            sectionType: "Full Length",
+                            categoryId: category.id,
+                            examId: test.examId
+                        }
+                    });
+                }
+            }
+        }
+        if (!mockTest)
+            throw new common_1.NotFoundException('MockTest or Test not found');
         return this.prisma.mockTestAttempt.create({
             data: {
                 otrId,
-                mockTestId,
+                mockTestId: mockTest.id,
                 score: 0,
                 totalMarks: 0,
                 startTime: new Date()
@@ -136,6 +164,8 @@ let MockTestService = MockTestService_1 = class MockTestService {
                 data: {
                     score: dto.score,
                     totalMarks: dto.totalMarks,
+                    correctAnswers: dto.correctAnswers ?? null,
+                    subjectBreakdown: dto.subjectBreakdown ?? undefined,
                     submitTime: new Date()
                 }
             });
@@ -146,10 +176,28 @@ let MockTestService = MockTestService_1 = class MockTestService {
                 mockTestId: mockTest.id,
                 score: dto.score,
                 totalMarks: dto.totalMarks,
+                correctAnswers: dto.correctAnswers ?? null,
+                subjectBreakdown: dto.subjectBreakdown ?? undefined,
                 startTime: new Date(),
                 submitTime: new Date()
             }
         });
+    }
+    async getUserMockAttempts(otrId) {
+        const attempts = await this.prisma.mockTestAttempt.findMany({
+            where: {
+                otrId,
+                OR: [
+                    { submitTime: { not: null } },
+                    { score: { gt: 0 } }
+                ]
+            },
+            include: { mockTest: true },
+            orderBy: { attemptedAt: 'desc' },
+            take: 30
+        });
+        this.logger.log(`getUserMockAttempts: Found ${attempts.length} submitted attempts for ${otrId}`);
+        return attempts;
     }
 };
 exports.MockTestService = MockTestService;

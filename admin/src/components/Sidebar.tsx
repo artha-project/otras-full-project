@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 
 import { NavLink, useNavigate } from 'react-router-dom';
+import OtrasLogo from '../assets/Otras1.png';
 
 const navItems = [
     { path: '/', label: 'Overview', icon: LayoutDashboard },
@@ -46,15 +47,13 @@ export default function Sidebar() {
 
             {/* Header */}
 
-            <div className="p-6 border-b border-[var(--border-light)] flex items-center gap-3">
+            <div className="p-6 border-b border-[var(--border-light)] flex items-center justify-center">
 
-                <div className="w-8 h-8 bg-[var(--color-primary)] rounded-[var(--radius-md)] flex items-center justify-center">
-                    <BookOpen className="text-white" size={18} />
-                </div>
-
-                <span className="font-bold text-[var(--text-main)] text-xl tracking-tight">
-                    OTRAS Admin
-                </span>
+                <img 
+                    src={OtrasLogo} 
+                    alt="OTRAS Admin" 
+                    className="h-12 w-auto object-contain transition-all duration-300"
+                />
 
             </div>
 

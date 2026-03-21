@@ -51,6 +51,14 @@ export default function Exams({ user }) {
     navigate('/exams/' + exam.id, { state: { selectedExam: exam } });
   };
 
+  const handleNavigateToResources = () => {
+    navigate('/resources');
+  };
+
+  const handleNavigateToEligibility = () => {
+    navigate('/eligibility');
+  };
+
   const filtered = exams.filter(
     (e) => !query || e.name.toLowerCase().includes(query.toLowerCase())
   );
@@ -76,16 +84,6 @@ export default function Exams({ user }) {
 
         <div className="flex items-center gap-3">
 
-          <button className="btn-secondary flex items-center gap-2">
-            <Filter size={14} />
-            {t("qualificationFilter")}
-          </button>
-
-          <button className="btn-secondary flex items-center gap-2">
-            <MapPin size={14} />
-            {t("stateSelection")}
-          </button>
-
         </div>
 
       </div>
@@ -105,7 +103,7 @@ export default function Exams({ user }) {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={t("searchExams")}
-          className="input w-full pl-10"
+          className="input w-full !pl-10"
         />
 
       </div>
@@ -249,16 +247,25 @@ export default function Exams({ user }) {
             </h3>
 
             {[
-              { icon: BookOpen, label: t('previousYearPapers') },
-              { icon: Calendar, label: t('syllabusTracker') },
-              { icon: Shield, label: t('eligibilityChecker') },
-            ].map(({ icon: Icon, label }) => (
+              { icon: BookOpen, label: t('previousYearPapers'), route: '/resources', handler: handleNavigateToResources },
+              { icon: Shield, label: t('eligibilityChecker'), route: '/eligibility', handler: handleNavigateToEligibility },
+            ].map(({ icon: Icon, label, handler }) => (
 
               <button
                 key={label}
-                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-default mb-2"
+                onClick={handler}
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-default mb-2 hover:bg-slate-50"
                 style={{
-                  border: "1px solid var(--border-light)"
+                  border: "1px solid var(--border-light)",
+                  transition: "all 0.2s ease"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-1px)";
+                  e.currentTarget.style.boxShadow = "var(--shadow-sm)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = "none";
                 }}
               >
 

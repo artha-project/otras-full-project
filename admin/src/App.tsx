@@ -15,6 +15,17 @@ import Analytics from './pages/Analytics';
 import Reports from './pages/Reports';
 import Referrals from './pages/Referrals';
 
+import axios from 'axios';
+
+// Set up Axios Interceptor for admin JWT tokens
+axios.interceptors.request.use(config => {
+  const token = localStorage.getItem('adminToken');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const token = localStorage.getItem('adminToken');
   if (!token) {

@@ -37,13 +37,15 @@ export declare class MockTestService {
         isAdaptive: boolean;
         categoryId: number;
     }) | null>;
-    startAttempt(otrId: string, mockTestId: number): Promise<{
+    startAttempt(otrId: string, mockTestOrTestId: number): Promise<{
         id: number;
         otrId: string;
         score: number;
         totalMarks: number;
+        subjectBreakdown: import("@prisma/client/runtime/library").JsonValue | null;
         startTime: Date | null;
         submitTime: Date | null;
+        correctAnswers: number | null;
         attemptedAt: Date;
         mockTestId: number;
     }>;
@@ -57,8 +59,10 @@ export declare class MockTestService {
         otrId: string;
         score: number;
         totalMarks: number;
+        subjectBreakdown: import("@prisma/client/runtime/library").JsonValue | null;
         startTime: Date | null;
         submitTime: Date | null;
+        correctAnswers: number | null;
         attemptedAt: Date;
         mockTestId: number;
     }>;
@@ -85,8 +89,10 @@ export declare class MockTestService {
         otrId: string;
         score: number;
         totalMarks: number;
+        subjectBreakdown: import("@prisma/client/runtime/library").JsonValue | null;
         startTime: Date | null;
         submitTime: Date | null;
+        correctAnswers: number | null;
         attemptedAt: Date;
         mockTestId: number;
     }) | null>;
@@ -109,14 +115,43 @@ export declare class MockTestService {
         score: number;
         totalMarks: number;
         attemptId?: number;
+        correctAnswers?: number;
+        subjectBreakdown?: any;
     }): Promise<{
         id: number;
         otrId: string;
         score: number;
         totalMarks: number;
+        subjectBreakdown: import("@prisma/client/runtime/library").JsonValue | null;
         startTime: Date | null;
         submitTime: Date | null;
+        correctAnswers: number | null;
         attemptedAt: Date;
         mockTestId: number;
     }>;
+    getUserMockAttempts(otrId: string): Promise<({
+        mockTest: {
+            id: number;
+            createdAt: Date;
+            updatedAt: Date;
+            examId: number | null;
+            title: string;
+            duration: number;
+            sectionType: string;
+            isProctored: boolean;
+            isAdaptive: boolean;
+            categoryId: number;
+        };
+    } & {
+        id: number;
+        otrId: string;
+        score: number;
+        totalMarks: number;
+        subjectBreakdown: import("@prisma/client/runtime/library").JsonValue | null;
+        startTime: Date | null;
+        submitTime: Date | null;
+        correctAnswers: number | null;
+        attemptedAt: Date;
+        mockTestId: number;
+    })[]>;
 }

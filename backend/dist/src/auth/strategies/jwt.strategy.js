@@ -22,12 +22,10 @@ let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(pas
         });
     }
     async validate(payload) {
-        console.log('JWT Strategy: Validating payload:', payload);
         if (!payload.sub) {
-            console.error('JWT Strategy: Missing sub in payload');
             return null;
         }
-        return { id: payload.sub, email: payload.email };
+        return { id: payload.sub, email: payload.email, role: payload.role || 'user' };
     }
 };
 exports.JwtStrategy = JwtStrategy;

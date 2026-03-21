@@ -225,7 +225,7 @@ export default function Eligibility() {
                     style={{ color: "var(--success)" }}
                   />
 
-                  <h3 className="section-title">
+                  <h3 className="section-title !text-xl">
                     {t("fullyEligible")} ({fullyEligible.length})
                   </h3>
 
@@ -286,7 +286,7 @@ export default function Eligibility() {
                     style={{ color: "var(--warning)" }}
                   />
 
-                  <h3 className="section-title">
+                  <h3 className="section-title !text-xl">
                     {t("almostEligible")} ({almostEligible.length})
                   </h3>
 
@@ -355,7 +355,7 @@ export default function Eligibility() {
                     style={{ color: "var(--danger)" }}
                   />
 
-                  <h3 className="section-title">
+                  <h3 className="section-title !text-xl">
                     {t("ineligible")} ({ineligible.length})
                   </h3>
 

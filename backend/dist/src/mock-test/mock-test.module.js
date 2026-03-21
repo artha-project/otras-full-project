@@ -19,6 +19,7 @@ exports.MockTestModule = MockTestModule = __decorate([
         imports: [prisma_module_1.PrismaModule],
         controllers: [mock_test_controller_1.MockTestController],
         providers: [mock_test_service_1.MockTestService],
+        exports: [mock_test_service_1.MockTestService],
     })
 ], MockTestModule);
 //# sourceMappingURL=mock-test.module.js.map

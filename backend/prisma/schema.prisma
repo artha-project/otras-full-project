@@ -178,16 +178,18 @@ model MockTest {
 }
 
 model MockTestAttempt {
-  id          Int       @id @default(autoincrement())
-  otrId       String
-  mockTestId  Int
-  score       Float
-  totalMarks  Float
-  attemptedAt DateTime  @default(now())
-  startTime   DateTime?
-  submitTime  DateTime?
-  mockTest    MockTest  @relation(fields: [mockTestId], references: [id])
-  user        User      @relation(fields: [otrId], references: [otrId])
+  id               Int       @id @default(autoincrement())
+  otrId            String
+  mockTestId       Int
+  score            Float
+  totalMarks       Float
+  correctAnswers   Int?
+  subjectBreakdown Json?
+  attemptedAt      DateTime  @default(now())
+  startTime        DateTime?
+  submitTime       DateTime?
+  mockTest         MockTest  @relation(fields: [mockTestId], references: [id])
+  user             User      @relation(fields: [otrId], references: [otrId])
 }
 
 model CareerReadinessTestScore {
