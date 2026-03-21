@@ -16,72 +16,70 @@ export declare class PaymentService {
         message: string;
         payment: {
             subscription: {
-                id: number;
                 createdAt: Date;
+                id: number;
                 title: string;
                 price: number;
                 features: string[];
                 isRecommended: boolean;
             };
         } & {
-            id: number;
-            createdAt: Date;
-            updatedAt: Date;
-            userId: number;
-            status: string;
-            subscriptionId: number;
             razorpayOrderId: string;
             razorpayPaymentId: string | null;
             razorpaySignature: string | null;
             amount: number;
             currency: string;
+            status: string;
+            createdAt: Date;
+            updatedAt: Date;
             paymentMethod: string;
+            id: number;
+            userId: number;
+            subscriptionId: number;
         };
     }>;
     payWithCredits(userId: number, subscriptionId: number): Promise<{
         message: string;
-        payment: {
-            id: number;
-            createdAt: Date;
-            updatedAt: Date;
-            userId: number;
-            status: string;
-            subscriptionId: number;
-            razorpayOrderId: string;
-            razorpayPaymentId: string | null;
-            razorpaySignature: string | null;
-            amount: number;
-            currency: string;
-            paymentMethod: string;
-        };
+        payment: any;
         remainingCredits: number;
     }>;
     getPaymentsByUser(userId: number): Promise<({
         subscription: {
-            id: number;
             createdAt: Date;
+            id: number;
             title: string;
             price: number;
             features: string[];
             isRecommended: boolean;
         };
     } & {
-        id: number;
-        createdAt: Date;
-        updatedAt: Date;
-        userId: number;
-        status: string;
-        subscriptionId: number;
         razorpayOrderId: string;
         razorpayPaymentId: string | null;
         razorpaySignature: string | null;
         amount: number;
         currency: string;
+        status: string;
+        createdAt: Date;
+        updatedAt: Date;
         paymentMethod: string;
+        id: number;
+        userId: number;
+        subscriptionId: number;
     })[]>;
     getAllPayments(): Promise<({
-        user: {
+        subscription: {
+            createdAt: Date;
             id: number;
+            title: string;
+            price: number;
+            features: string[];
+            isRecommended: boolean;
+        };
+        user: {
+            createdAt: Date;
+            updatedAt: Date;
+            id: number;
+            credits: number;
             firstName: string;
             lastName: string;
             email: string;
@@ -93,32 +91,21 @@ export declare class PaymentService {
             careerPreference: string | null;
             domicile: string | null;
             pincode: string | null;
-            createdAt: Date;
-            updatedAt: Date;
-            credits: number;
             referralCode: string;
             preferredLanguage: string;
         };
-        subscription: {
-            id: number;
-            createdAt: Date;
-            title: string;
-            price: number;
-            features: string[];
-            isRecommended: boolean;
-        };
     } & {
-        id: number;
-        createdAt: Date;
-        updatedAt: Date;
-        userId: number;
-        status: string;
-        subscriptionId: number;
         razorpayOrderId: string;
         razorpayPaymentId: string | null;
         razorpaySignature: string | null;
         amount: number;
         currency: string;
+        status: string;
+        createdAt: Date;
+        updatedAt: Date;
         paymentMethod: string;
+        id: number;
+        userId: number;
+        subscriptionId: number;
     })[]>;
 }

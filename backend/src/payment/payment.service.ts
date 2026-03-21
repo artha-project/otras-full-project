@@ -138,16 +138,40 @@ export class PaymentService {
       throw new NotFoundException('User not found');
     }
 
-    if (user.credits < price) {
+    // Find all Referral records where refereeOtrId === user.otrId
+    const referralsAsReferee = await this.prisma.referral.findMany({
+      where: { refereeOtrId: user.otrId }
+    });
+
+    let totalRefereeCredits = 0;
+    for (const r of referralsAsReferee) {
+      totalRefereeCredits += (r.creditsEarned || 0);
+    }
+
+    if (totalRefereeCredits < price) {
       throw new BadRequestException('Not enough credits to purchase this plan');
     }
 
-    // Execute credit deduction and payment creation in a transaction
-    const [updatedUser, newPayment] = await this.prisma.$transaction([
-      this.prisma.user.update({
-        where: { id: userId },
-        data: { credits: { decrement: price } },
-      }),
+    // Deduct price explicitly from the matching Referral records
+    let remainingToDeduct = price;
+    const updates: any[] = [];
+    for (const r of referralsAsReferee) {
+      if (remainingToDeduct <= 0) break;
+      if (r.creditsEarned > 0) {
+        const deduct = Math.min(r.creditsEarned, remainingToDeduct);
+        updates.push(
+          this.prisma.referral.update({
+            where: { id: r.id },
+            data: { creditsEarned: { decrement: deduct } }
+          })
+        );
+        remainingToDeduct -= deduct;
+      }
+    }
+
+    // Execute credit deduction from Referral table and payment creation in a transaction
+    const transactionResult = await this.prisma.$transaction([
+      ...updates,
       this.prisma.payment.create({
         data: {
           userId,
@@ -161,10 +185,13 @@ export class PaymentService {
       }),
     ]);
 
+    const newPayment = transactionResult[transactionResult.length - 1];
+    const remainingCredits = totalRefereeCredits - price;
+
     return {
       message: 'Subscription activated using credits',
       payment: newPayment,
-      remainingCredits: updatedUser.credits,
+      remainingCredits: remainingCredits,
     };
   }
 

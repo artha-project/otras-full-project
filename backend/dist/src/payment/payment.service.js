@@ -150,14 +150,32 @@ let PaymentService = class PaymentService {
         if (!user) {
             throw new common_1.NotFoundException('User not found');
         }
-        if (user.credits < price) {
+        const referralsAsReferee = await this.prisma.referral.findMany({
+            where: { refereeOtrId: user.otrId }
+        });
+        let totalRefereeCredits = 0;
+        for (const r of referralsAsReferee) {
+            totalRefereeCredits += (r.creditsEarned || 0);
+        }
+        if (totalRefereeCredits < price) {
             throw new common_1.BadRequestException('Not enough credits to purchase this plan');
         }
-        const [updatedUser, newPayment] = await this.prisma.$transaction([
-            this.prisma.user.update({
-                where: { id: userId },
-                data: { credits: { decrement: price } },
-            }),
+        let remainingToDeduct = price;
+        const updates = [];
+        for (const r of referralsAsReferee) {
+            if (remainingToDeduct <= 0)
+                break;
+            if (r.creditsEarned > 0) {
+                const deduct = Math.min(r.creditsEarned, remainingToDeduct);
+                updates.push(this.prisma.referral.update({
+                    where: { id: r.id },
+                    data: { creditsEarned: { decrement: deduct } }
+                }));
+                remainingToDeduct -= deduct;
+            }
+        }
+        const transactionResult = await this.prisma.$transaction([
+            ...updates,
             this.prisma.payment.create({
                 data: {
                     userId,
@@ -170,10 +188,12 @@ let PaymentService = class PaymentService {
                 },
             }),
         ]);
+        const newPayment = transactionResult[transactionResult.length - 1];
+        const remainingCredits = totalRefereeCredits - price;
         return {
             message: 'Subscription activated using credits',
             payment: newPayment,
-            remainingCredits: updatedUser.credits,
+            remainingCredits: remainingCredits,
         };
     }
     async getPaymentsByUser(userId) {

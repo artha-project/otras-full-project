@@ -121,7 +121,18 @@ let UserService = class UserService {
         return this.prisma.user.findUnique({ where: { otrId } });
     }
     async findById(id) {
-        return this.prisma.user.findUnique({ where: { id } });
+        const user = await this.prisma.user.findUnique({ where: { id } });
+        if (user) {
+            const referralsAsReferee = await this.prisma.referral.findMany({
+                where: { refereeOtrId: user.otrId }
+            });
+            const refereeCredits = referralsAsReferee.reduce((sum, r) => sum + (r.creditsEarned || 0), 0);
+            return {
+                ...user,
+                credits: refereeCredits
+            };
+        }
+        return user;
     }
     async findAll() {
         return this.prisma.user.findMany({ take: 100 });
