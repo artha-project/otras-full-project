@@ -15,6 +15,11 @@ const IntelligenceFeedback = ({ feedback }) => {
   const tier2Keys = ['subjectStrength', 'weakAreas', 'preparationAdvice'];
   const tier3Keys = ['accuracyInsight', 'speedInsight', 'consistencyInsight'];
 
+  // Maps backend field names to i18n translation keys (when they differ)
+  const keyLabelMap = {
+    weakAreas: 'weakAreasInsight',
+  };
+
   let activeTierTitle = "careerReadinessInsight";
   let Icon = Brain;
   let iconColor = "text-purple-500";
@@ -56,9 +61,10 @@ const IntelligenceFeedback = ({ feedback }) => {
       <div className="space-y-6 relative z-10">
         {feedbackEntries.map(([key, value], index) => {
           const color = colors[index % colors.length];
+          const labelKey = keyLabelMap[key] || key;
           return (
             <div key={key}>
-              <p className={`text-xs font-bold ${color.text} uppercase tracking-widest mb-2`}>{t(key)}</p>
+              <p className={`text-xs font-bold ${color.text} uppercase tracking-widest mb-2`}>{t(labelKey)}</p>
               <p className={`text-slate-700 leading-relaxed font-medium ${color.bg} p-4 rounded-xl border ${color.border}`}>
                 "<FormattedText text={value} />"
               </p>

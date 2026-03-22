@@ -7,7 +7,6 @@ export declare class UserController {
     private readonly mockTestService;
     constructor(userService: UserService, resultService: ResultService, mockTestService: MockTestService);
     findAll(): Promise<{
-        id: number;
         firstName: string;
         lastName: string;
         email: string;
@@ -24,10 +23,9 @@ export declare class UserController {
         credits: number;
         referralCode: string;
         preferredLanguage: string;
+        id: number;
     }[]>;
     findOne(id: number): Promise<{
-        credits: number;
-        id: number;
         firstName: string;
         lastName: string;
         email: string;
@@ -41,8 +39,10 @@ export declare class UserController {
         pincode: string | null;
         createdAt: Date;
         updatedAt: Date;
+        credits: number;
         referralCode: string;
         preferredLanguage: string;
+        id: number;
     } | null>;
     getDashboardData(id: number): Promise<{
         user: {
@@ -76,7 +76,6 @@ export declare class UserController {
         }[];
     }>;
     update(id: number, data: any): Promise<{
-        id: number;
         firstName: string;
         lastName: string;
         email: string;
@@ -93,9 +92,9 @@ export declare class UserController {
         credits: number;
         referralCode: string;
         preferredLanguage: string;
+        id: number;
     }>;
     remove(id: number): Promise<{
-        id: number;
         firstName: string;
         lastName: string;
         email: string;
@@ -112,6 +111,7 @@ export declare class UserController {
         credits: number;
         referralCode: string;
         preferredLanguage: string;
+        id: number;
     }>;
     getTierStatus(id: number): Promise<{
         tier1: {

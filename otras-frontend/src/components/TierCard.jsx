@@ -1,4 +1,5 @@
 import { Lock, Brain, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { useTranslation } from '../hooks/useTranslation';
 
 export default function TierCard({ 
   tier, 
@@ -17,8 +18,9 @@ export default function TierCard({
   planPrice = 0,
   isProcessing = false
 }) {
+  const { t } = useTranslation();
   // Normalize data: if tier object is passed (Legacy/Artha), use its properties
-  const title = name || tier?.title || "Plan";
+  const title = name || tier?.title || t("plan");
   const subTitle = price || tier?.sub || "";
   const description = duration || tier?.desc || "";
   
@@ -31,7 +33,7 @@ export default function TierCard({
         <div className="absolute inset-0 bg-white/60 backdrop-blur-sm flex flex-col items-center justify-center z-10">
           <Lock size={24} className="text-slate-400 mb-2" />
           <p className="text-slate-500 text-xs font-bold uppercase tracking-wider text-center">
-            Complete Previous Tier
+            {t("completePreviousTier")}
           </p>
         </div>
         <div className="opacity-30">
@@ -43,7 +45,7 @@ export default function TierCard({
           <p className="text-slate-300 text-sm mb-6">{description}</p>
           <div className="mb-6">
             <div className="flex justify-between text-xs text-slate-300 mb-2">
-              <span className="font-semibold">Tier Progress</span>
+              <span className="font-semibold">{t("tierProgress")}</span>
               <span>0%</span>
             </div>
             <div className="h-2 bg-slate-100 rounded-full" />
@@ -52,7 +54,7 @@ export default function TierCard({
             disabled
             className="w-full py-4 rounded-2xl text-slate-300 font-bold text-sm flex items-center justify-center gap-2 bg-slate-100"
           >
-            {buttonText} <ArrowRight size={18} />
+            {buttonText === "Pay Now" ? t("payNow") : buttonText} <ArrowRight size={18} />
           </button>
         </div>
       </div>
@@ -63,7 +65,7 @@ export default function TierCard({
     <div className={`bg-white rounded-3xl p-8 border hover:shadow-xl transition-all duration-300 flex flex-col h-full relative ${isPopular ? 'border-blue-500 ring-4 ring-blue-50' : 'border-slate-100'}`}>
       {isPopular && (
         <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-4 py-1 rounded-full text-xs font-black uppercase tracking-widest shadow-lg">
-          Most Popular
+          {t("mostPopular")}
         </div>
       )}
       
@@ -92,7 +94,7 @@ export default function TierCard({
       
       <div className="mb-6">
         <div className="flex justify-between text-xs text-slate-500 mb-2">
-          <span className="font-bold text-slate-700">Tier Progress</span>
+          <span className="font-bold text-slate-700">{t("tierProgress")}</span>
           <span>0%</span>
         </div>
         <div className="h-2 bg-slate-100 rounded-full">
@@ -107,7 +109,7 @@ export default function TierCard({
           className={`w-full py-4 rounded-2xl text-white font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-lg shadow-blue-100 ${isProcessing ? 'opacity-70 cursor-wait' : 'hover:scale-[1.02]'}`}
           style={{ background: themeColor }}
         >
-          {isProcessing ? "Processing..." : buttonText} {!isProcessing && <ArrowRight size={18} />}
+          {isProcessing ? t("processing") : (buttonText === "Pay Now" ? t("payNow") : buttonText)} {!isProcessing && <ArrowRight size={18} />}
         </button>
 
         {showCreditOption && onCreditPay && (
@@ -116,7 +118,7 @@ export default function TierCard({
             disabled={isProcessing}
             className={`w-full py-4 rounded-2xl text-slate-700 bg-amber-100 hover:bg-amber-200 border border-amber-200 font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-md ${isProcessing ? 'opacity-70 cursor-wait' : 'hover:scale-[1.02]'}`}
           >
-            {isProcessing ? "Processing..." : `Use ${planPrice} Credits`} {!isProcessing && <ArrowRight size={18} />}
+            {isProcessing ? t("processing") : t("useCredits", { count: planPrice })} {!isProcessing && <ArrowRight size={18} />}
           </button>
         )}
       </div>

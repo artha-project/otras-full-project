@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Gift, Star, Users, Copy, CheckCircle } from 'lucide-react';
+import { useTranslation } from '../hooks/useTranslation';
 
 export default function UserCreditsCard({ user }) {
+  const { t } = useTranslation();
   const [stats, setStats] = useState({
     availableCredits: user?.credits || 0,
     creditsEarned: 0,
@@ -38,8 +40,8 @@ export default function UserCreditsCard({ user }) {
     >
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="font-bold text-lg">Your Credits</h3>
-          <p className="text-blue-200 text-sm">Referral Rewards</p>
+          <h3 className="font-bold text-lg">{t('yourCredits')}</h3>
+          <p className="text-blue-200 text-sm">{t('referralRewards')}</p>
         </div>
         <Gift size={26} className="text-blue-300" />
       </div>
@@ -49,14 +51,14 @@ export default function UserCreditsCard({ user }) {
         <div className="bg-white/10 rounded-xl p-3 backdrop-blur-sm">
           <div className="flex items-center gap-2 mb-1">
             <Star size={14} className="text-yellow-300" />
-            <span className="text-blue-200 text-xs font-semibold uppercase tracking-wide">Credits</span>
+            <span className="text-blue-200 text-xs font-semibold uppercase tracking-wide">{t('credits')}</span>
           </div>
           <p className="text-2xl font-black">{stats.availableCredits}</p>
         </div>
         <div className="bg-white/10 rounded-xl p-3 backdrop-blur-sm">
           <div className="flex items-center gap-2 mb-1">
             <Users size={14} className="text-green-300" />
-            <span className="text-blue-200 text-xs font-semibold uppercase tracking-wide">Referrals</span>
+            <span className="text-blue-200 text-xs font-semibold uppercase tracking-wide">{t('referrals')}</span>
           </div>
           <p className="text-2xl font-black">{stats.totalReferrals}</p>
         </div>
@@ -64,13 +66,13 @@ export default function UserCreditsCard({ user }) {
 
       {/* Referral code */}
       <div className="bg-white/10 rounded-xl p-3 backdrop-blur-sm">
-        <p className="text-blue-300 text-xs font-bold uppercase tracking-widest mb-1">Your Referral Code</p>
+        <p className="text-blue-300 text-xs font-bold uppercase tracking-widest mb-1">{t('yourReferralCode')}</p>
         <div className="flex items-center justify-between">
           <p className="text-xl font-black tracking-widest">{stats.referralCode}</p>
           <button
             onClick={handleCopy}
             className="p-1.5 bg-white/20 rounded-lg hover:bg-white/30 transition"
-            title="Copy code"
+            title={t('copyCode')}
           >
             {copied ? <CheckCircle size={16} className="text-green-300" /> : <Copy size={16} />}
           </button>

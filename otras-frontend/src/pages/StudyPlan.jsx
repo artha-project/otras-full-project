@@ -12,17 +12,17 @@ export default function StudyPlan({ user: propUser }) {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  const GOVT_EXAMS = [
-    "UPSC Civil Services",
-    "SSC CGL",
-    "IBPS PO",
-    "RRB NTPC",
-    "State PSC",
-    "NDA",
-    "CDS",
-    "CAPF (Assistant Commandant)",
-    "EPFO",
-    "LIC AAO"
+  const examOptions = [
+    { value: "UPSC Civil Services", label: t("upscCivilServices") },
+    { value: "SSC CGL", label: t("sscCgl") },
+    { value: "IBPS PO", label: t("ibpsPo") },
+    { value: "RRB NTPC", label: t("rrbNtpc") },
+    { value: "State PSC", label: t("statePsc") },
+    { value: "NDA", label: t("nda") },
+    { value: "CDS", label: t("cds") },
+    { value: "CAPF (Assistant Commandant)", label: t("capfAc") },
+    { value: "EPFO", label: t("epfo") },
+    { value: "LIC AAO", label: t("licAao") }
   ];
 
   // Tab states
@@ -44,18 +44,19 @@ export default function StudyPlan({ user: propUser }) {
   const [targetExam, setTargetExam] = useState("");
   const [examDate, setExamDate] = useState("2026-06-16");
   const [level, setLevel] = useState("Intermediate");
-  const [weakAreas, setWeakAreas] = useState("Reasoning, Quant");
+  const [weakAreas, setWeakAreas] = useState(t("reasoningQuantDefault"));
   const [hours, setHours] = useState("6");
   const [mockFreq, setMockFreq] = useState("Once a week");
-  const [revision, setRevision] = useState("Spaced Repetition");
-  const [prefTime, setPrefTime] = useState("Mornings (8 AM - 12 PM)");
+  const [revision, setRevision] = useState(t("spacedRepetitionDefault"));
+  const [prefTime, setPrefTime] = useState(t("morningPrefTimeDefault"));
   const [duration, setDuration] = useState("7");
 
   const effectiveUser = propUser || JSON.parse(localStorage.getItem("user") || "{}");
   const userId = (effectiveUser.id && effectiveUser.id !== 7) ? effectiveUser.id : 1;
   const getSafeDayName = (date) => {
-    if (!date) return "Day";
-    return new Date(date).toLocaleDateString("en-US", { weekday: "short" });
+    if (!date) return t("days");
+    const locale = language === 'hi' ? 'hi-IN' : language === 'te' ? 'te-IN' : 'en-US';
+    return new Date(date).toLocaleDateString(locale, { weekday: "short" });
   };
 
   const [lastCheckedDate, setLastCheckedDate] = useState(new Date().toDateString());
@@ -126,11 +127,11 @@ export default function StudyPlan({ user: propUser }) {
         setActiveDayIndex(0);
         console.log("Study Plan: Plan generated");
       } else {
-        alert("AI generated an empty or invalid plan. Please try again with different inputs.");
+        alert(t("emptyPlanError"));
       }
     } catch (error) {
       console.error("Study Plan Generation Error:", error);
-      alert(`AI study plan generation failed: ${error.message}`);
+      alert(t("generationFailed", { error: error.message }));
     } finally {
       setLoading(false);
     }
@@ -142,13 +143,13 @@ export default function StudyPlan({ user: propUser }) {
     try {
       await saveStudyPlan(previewInputs, previewPlan);
       console.log("Study Plan: Plan saved");
-      alert("Study plan saved successfully!");
+      alert(t("planSavedSuccess"));
       setPreviewPlan(null);
       setPreviewInputs(null);
       fetchSavedPlans();
     } catch (error) {
       console.error("Save Error:", error);
-      alert("Failed to save plan.");
+      alert(t("savePlanError"));
     } finally {
       setSaving(false);
     }
@@ -244,10 +245,10 @@ export default function StudyPlan({ user: propUser }) {
       const updated = plans.find(p => p.id === selectedPlan.id);
       if (updated) setSelectedPlan(updated);
 
-      alert(`Simulation Mode: Advanced to ${nextDay.toLocaleDateString()}. Missed tasks relocated.`);
+      alert(t("simulationSuccess", { date: nextDay.toLocaleDateString() }));
     } catch (error) {
       console.error("Simulation Error:", error);
-      alert("Failed to simulate date change.");
+      alert(t("simulationError"));
     }
   };
 
@@ -286,12 +287,12 @@ export default function StudyPlan({ user: propUser }) {
                         : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                       }`}
                   >
-                    Day {idx + 1} {isDayLocked && <Lock size={10} className="ml-0.5 opacity-60" />}
+                    {t("days")} {idx + 1} {isDayLocked && <Lock size={10} className="ml-0.5 opacity-60" />}
                   </button>
                   {isDayLocked && (
                     <div className="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 pointer-events-none whitespace-nowrap z-50">
                       <div className="bg-slate-900/95 backdrop-blur-md text-white text-[11px] font-bold px-4 py-2.5 rounded-xl flex items-center gap-2 shadow-2xl border border-white/10">
-                        👉 Unlock with subscription
+                        👉 {t("unlockWithSubscription")}
                       </div>
                     </div>
                   )}
@@ -305,12 +306,12 @@ export default function StudyPlan({ user: propUser }) {
               <div>
                 <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
                   <Clock size={18} style={{ color: "var(--color-primary)" }} />
-                  Day {activeDayIndex + 1}: {getSafeDayName(day.date)}
+                  {t("days")} {activeDayIndex + 1}: {getSafeDayName(day.date)}
                 </h3>
                 <p className="text-xs text-muted mt-1">{day.date ? new Date(day.date).toLocaleDateString() : ""}</p>
               </div>
               <span className="px-3 py-1 rounded-full text-xs font-bold" style={{ background: "var(--color-primary-light)", color: "var(--color-primary)" }}>
-                {day.activities.length} Activities
+                {day.activities.length} {t("activitiesLabel")}
               </span>
             </div>
 
@@ -346,13 +347,13 @@ export default function StudyPlan({ user: propUser }) {
                     </h4>
                     {block.focusArea && (
                       <span className="inline-block text-[9px] font-bold px-1.5 py-0.5 bg-slate-100 text-slate-500 rounded uppercase">
-                        Focus: {block.focusArea}
+                        {t("focusAreaLabel")}: {block.focusArea}
                       </span>
                     )}
                   </div>
                   {block.missed && (
                     <span className="text-[9px] font-bold text-red-500 bg-red-50 px-2 py-1 rounded-full uppercase">
-                      Missed & Rescheduled
+                      {t("missedRescheduled")}
                     </span>
                   )}
                 </div>
@@ -394,7 +395,7 @@ export default function StudyPlan({ user: propUser }) {
                     className="text-2xl sm:text-3xl font-black mb-3 tracking-tight"
                     style={{ color: "var(--color-primary)" }}
                   >
-                    Unlock Full Study Plan
+                    {t("unlockFullStudyPlan")}
                   </h4>
 
                   {/* Subtitle */}
@@ -402,7 +403,7 @@ export default function StudyPlan({ user: propUser }) {
                     className="text-sm sm:text-base font-semibold mb-8 max-w-[280px] mx-auto"
                     style={{ color: "var(--color-primary)" }}
                   >
-                    Get full access for just ₹1
+                    {t("getAccessForOneRupee")}
                   </p>
 
                   {/* CTA Button */}
@@ -421,7 +422,7 @@ export default function StudyPlan({ user: propUser }) {
                     }}
                   >
                     <Sparkles size={16} />
-                    Unlock Now
+                    {t("unlockNow")}
                     <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
                   </button>
                 </div>
@@ -481,11 +482,11 @@ export default function StudyPlan({ user: propUser }) {
                       className="font-bold text-sm transition-colors"
                       style={{ color: isDayLocked ? "var(--text-secondary)" : "var(--text-main)" }}
                     >
-                      Day {idx + 1}: {getSafeDayName(day.date)}
+                      {t("days")} {idx + 1}: {getSafeDayName(day.date)}
                     </h4>
                     {isDayLocked ? (
                       <p className="text-[11px] font-bold mt-0.5" style={{ color: "var(--color-primary)" }}>
-                        👉 Available after subscription
+                        👉 {t("availableAfterSubscription")}
                       </p>
                     ) : (
                       <p className="text-[10px]" style={{ color: "var(--text-muted)" }}>
@@ -502,7 +503,7 @@ export default function StudyPlan({ user: propUser }) {
                       color: "var(--text-secondary)"
                     }}
                   >
-                    {day.activities.filter(a => a.completed).length}/{day.activities.length} Done
+                    {day.activities.filter(a => a.completed).length}/{day.activities.length} {t("activitiesDone")}
                   </span>
                   {expandedDay === idx ? <ChevronUp size={16} style={{ color: "var(--text-muted)" }} /> : <ChevronDown size={16} style={{ color: "var(--text-muted)" }} />}
                 </div>
@@ -550,10 +551,10 @@ export default function StudyPlan({ user: propUser }) {
         {selectedPlan && (
           <div className="flex gap-2">
             <button onClick={handleSimulateDateChange} className="btn-secondary text-[10px] py-1 h-auto flex items-center gap-2">
-              <Clock size={12} /> Simulate Date Change
+              <Clock size={12} /> {t("simulateDateChange")}
             </button>
             <button onClick={() => setSelectedPlan(null)} className="btn-secondary text-[10px] py-1 h-auto flex items-center gap-2">
-              <X size={12} /> Close Plan
+              <X size={12} /> {t("closePlan")}
             </button>
           </div>
         )}
@@ -573,26 +574,26 @@ export default function StudyPlan({ user: propUser }) {
                     className="input w-full"
                   >
                     <option value="" disabled>
-                      Select your target exam
+                      {t("selectTargetExamPlaceholder")}
                     </option>
 
-                    {GOVT_EXAMS.map((exam, i) => (
-                      <option key={i} value={exam}>
-                        {exam}
+                    {examOptions.map((exam, i) => (
+                      <option key={i} value={exam.value}>
+                        {exam.label}
                       </option>
                     ))}
                   </select>
                 </FormField>
                 <FormField label={t("examDate")}><TextInput type="date" value={examDate} onChange={(e) => setExamDate(e.target.value)} /></FormField>
-                <FormField label={t("currentLevel")}><SelectInput value={level} onChange={(e) => setLevel(e.target.value)} options={[t("beginner"), t("intermediate"), t("advanced")]} /></FormField>
-                <FormField label={t("weakAreas")}><TextInput value={weakAreas} onChange={(e) => setWeakAreas(e.target.value)} placeholder="e.g. Math, Physics" /></FormField>
+                <FormField label={t("currentLevel")}><SelectInput value={level} onChange={(e) => setLevel(e.target.value)} options={[{label: t("beginner"), value: "Beginner"}, {label: t("intermediate"), value: "Intermediate"}, {label: t("advanced"), value: "Advanced"}]} /></FormField>
+                <FormField label={t("weakAreas")}><TextInput value={weakAreas} onChange={(e) => setWeakAreas(e.target.value)} placeholder={t("weakAreasPlaceholder")} /></FormField>
                 <FormField label={t("dailyStudyHours")}><TextInput value={hours} onChange={(e) => setHours(e.target.value)} /></FormField>
-                <FormField label={t("mockFrequency")}><SelectInput value={mockFreq} onChange={(e) => setMockFreq(e.target.value)} options={[t("onceAWeek"), t("twiceAWeek"), t("daily")]} /></FormField>
+                <FormField label={t("mockFrequency")}><SelectInput value={mockFreq} onChange={(e) => setMockFreq(e.target.value)} options={[{label: t("onceAWeek"), value: "Once a week"}, {label: t("twiceAWeek"), value: "Twice a week"}, {label: t("daily"), value: "Daily"}]} /></FormField>
                 <FormField label={t("revisionStrategy")}><TextInput value={revision} onChange={(e) => setRevision(e.target.value)} /></FormField>
-                <FormField label="Plan Duration"><SelectInput value={duration} onChange={(e) => setDuration(e.target.value)} options={["7", "15", "30"]} /></FormField>
+                <FormField label={t("planDuration")}><SelectInput value={duration} onChange={(e) => setDuration(e.target.value)} options={["7", "15", "30"]} /></FormField>
                 <button onClick={handleArchitectPlan} disabled={loading} className="btn-primary w-full flex items-center justify-center gap-2">
                   {loading ? <Loader2 size={16} className="animate-spin" /> : <Settings size={14} />}
-                  {loading ? "Generating AI Study Plan..." : t("architectPlan")}
+                  {loading ? t("generatingStudyPlan") : t("architectPlan")}
                 </button>
               </div>
             </div>
@@ -604,14 +605,14 @@ export default function StudyPlan({ user: propUser }) {
           {loading ? (
             <div className="p-12 text-center flex flex-col items-center justify-center min-h-[400px]" style={{ background: "var(--bg-card)", borderRadius: "var(--radius-xl)", border: "1px solid var(--border-light)" }}>
               <Loader2 size={48} className="animate-spin mb-4" style={{ color: "var(--color-primary)" }} />
-              <h3 className="section-title !text-xl">Generating AI Study Plan...</h3>
-              <p className="text-subtle">Architecting your path to success. This takes 10-20 seconds.</p>
+              <h3 className="section-title !text-xl">{t("generatingStudyPlan")}</h3>
+              <p className="text-subtle">{t("architectingPathDesc")}</p>
             </div>
           ) : selectedPlan ? (
             <div className="space-y-6">
               <div className="p-6 border-l-4" style={{ background: "var(--bg-card)", borderLeftColor: "var(--color-primary)", borderRadius: "var(--radius-xl)" }}>
                 <h2 className="text-2xl font-black uppercase tracking-tight" style={{ color: "var(--text-main)" }}>{selectedPlan.targetExam}</h2>
-                <p className="text-xs font-bold mt-1" style={{ color: "var(--color-primary)" }}>{selectedPlan.days.length} Day Comprehensive Plan</p>
+                <p className="text-xs font-bold mt-1" style={{ color: "var(--color-primary)" }}>{selectedPlan.days.length} {t("days")} {t("comprehensivePlan")}</p>
               </div>
 
               <div className="flex gap-4 mb-4">
@@ -622,7 +623,7 @@ export default function StudyPlan({ user: propUser }) {
                     : "bg-slate-100 text-slate-500 hover:bg-slate-200"
                     }`}
                 >
-                  Daily View
+                  {t("dailyView")}
                 </button>
                 <button
                   onClick={() => setExpandedDay(0)}
@@ -631,7 +632,7 @@ export default function StudyPlan({ user: propUser }) {
                     : "bg-slate-100 text-slate-500 hover:bg-slate-200"
                     }`}
                 >
-                  Full Roadmap
+                  {t("fullRoadmap")}
                 </button>
               </div>
 
@@ -642,8 +643,8 @@ export default function StudyPlan({ user: propUser }) {
               <div className="p-4 rounded-2xl shadow-lg" style={{ background: "var(--color-primary)", color: "white" }}>
                 <div className="flex justify-between items-center">
                   <div>
-                    <h3 className="font-bold">AI Recommended Plan</h3>
-                    <p className="text-xs opacity-90">{previewPlan.days.length} Days tailored for YOUR performance.</p>
+                    <h3 className="font-bold">{t("aiRecommendedPlan")}</h3>
+                    <p className="text-xs opacity-90">{t("daysTailoredForYou", { count: previewPlan.days.length })}</p>
                   </div>
                   <div className="flex gap-2">
                     <div className="relative group">
@@ -655,18 +656,18 @@ export default function StudyPlan({ user: propUser }) {
                           : "bg-white/50 text-slate-400 cursor-not-allowed"
                           }`}
                       >
-                        {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />} Save Plan
+                        {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />} {t("savePlan")}
                       </button>
                       {!hasSubscription && (
                         <div className="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 pointer-events-none whitespace-nowrap z-50">
                           <div className="bg-slate-900/95 backdrop-blur-md text-white text-[11px] font-bold px-4 py-2.5 rounded-xl flex items-center gap-2 shadow-2xl border border-white/10">
-                            👉 Unlock with ₹1 subscription
+                            👉 {t("unlockWithSubscription")}
                           </div>
                         </div>
                       )}
                     </div>
                     <button onClick={handleCancelPlan} disabled={saving} className="bg-red-500 text-white px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 hover:bg-red-600 transition-colors">
-                      <X size={14} /> Cancel
+                      <X size={14} /> {t("cancel")}
                     </button>
                   </div>
                 </div>
@@ -687,8 +688,8 @@ export default function StudyPlan({ user: propUser }) {
               <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4" style={{ background: "var(--color-primary-light)" }}>
                 <BookOpen size={32} style={{ color: "var(--text-muted)" }} />
               </div>
-              <h3 className="section-title !text-xl">Ready to Architect?</h3>
-              <p className="text-subtle max-w-sm mx-auto">Fill in the inputs and let OTRAS AI build your personalized 30-day success roadmap.</p>
+              <h3 className="section-title !text-xl">{t("readyToArchitect")}</h3>
+              <p className="text-subtle max-w-sm mx-auto">{t("readyToArchitectDesc")}</p>
             </div>
           )}
 
@@ -696,7 +697,7 @@ export default function StudyPlan({ user: propUser }) {
           <div className="mt-12 pt-8 border-t" style={{ borderColor: "var(--border-light)" }}>
             <h2 className="section-title !text-xl mb-6 flex items-center gap-2">
               <Save size={18} style={{ color: "var(--color-primary)" }} />
-              Saved Study Plans
+              {t("savedStudyPlans")}
             </h2>
             {savedPlans.length > 0 ? (
               <div className="grid sm:grid-cols-2 gap-4">
@@ -722,16 +723,16 @@ export default function StudyPlan({ user: propUser }) {
                       </span>
                     </div>
                     <div className="flex items-center gap-4 text-[10px] font-bold uppercase" style={{ color: "var(--text-secondary)" }}>
-                      <span>{plan.days.length} Days</span>
+                      <span>{plan.days.length} {t("days")}</span>
                       <span className="w-1 h-1 rounded-full" style={{ background: "var(--border-light)" }} />
-                      <span>{plan.dailyStudyHours} Hrs/Day</span>
+                      <span>{plan.dailyStudyHours} {t("hrsPerDay")}</span>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
               <div className="p-8 text-center rounded-2xl border border-dashed" style={{ background: "var(--bg-light)", borderColor: "var(--border-light)" }}>
-                <p className="text-sm" style={{ color: "var(--text-muted)" }}>No saved plans yet.</p>
+                <p className="text-sm" style={{ color: "var(--text-muted)" }}>{t("noSavedPlans")}</p>
               </div>
             )}
           </div>

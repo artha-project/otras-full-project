@@ -50,10 +50,10 @@ setLoading(false);
         headers: { Authorization: `Bearer ${token}` }
       });
 
-      alert(res.data.message || "Subscription activated using credits!");
+      alert(res.data.message || t("subscriptionActivatedCredits"));
       setUserCredits(res.data.remainingCredits);
     } catch (error) {
-      alert(error.response?.data?.message || "Failed to purchase plan with credits.");
+      alert(error.response?.data?.message || t("failedPurchaseCredits"));
     } finally {
       setProcessingId(null);
     }
@@ -61,7 +61,7 @@ setLoading(false);
 
   const handlePay = async (plan) => {
     if (plan.price === 0) {
-      alert("This is a free plan. You're already good to go!");
+      alert(t("freePlanMessage"));
       return;
     }
 
@@ -73,7 +73,7 @@ setLoading(false);
       
       const token = localStorage.getItem("token");
       if (!token) {
-        alert("You need to login to proceed with the subscription.");
+        alert(t("loginRequiredSubscription"));
         setProcessingId(null);
         return;
       }
@@ -94,8 +94,8 @@ setLoading(false);
         key: keyId,
         amount: amount,
         currency: currency,
-        name: "OTRAS Subscription",
-        description: `${plan.name} Plan`,
+        name: t("otrasSubscription"),
+        description: t("planDescription", { name: plan.name }),
         order_id: orderId,
         handler: async function (response) {
           try {
@@ -109,12 +109,12 @@ setLoading(false);
             });
 
             if (verifyRes.data.message === 'Payment verified successfully') {
-              alert("Payment Successful! Your subscription is now active.");
+              alert(t("paymentSuccessfulActive"));
               // Optionally refresh user state or UI here
             }
           } catch (error) {
             console.error("Verification error:", error);
-            alert("Payment verification failed. Please contact support.");
+            alert(t("paymentVerificationFailed"));
           }
         },
         prefill: {
@@ -136,7 +136,7 @@ setLoading(false);
       rzp.open();
     } catch (error) {
       console.error("Order creation error:", error);
-      alert("Something went wrong initializing the payment.");
+      alert(t("paymentInitializationError"));
     } finally {
       setProcessingId(null);
     }
@@ -192,13 +192,13 @@ className="app-card h-[420px] animate-pulse"
 <TierCard
 key={plan.id}
 tier={plan.name}
-price={plan.price===0?"Free":`₹${plan.price}`}
-duration={plan.duration||"Lifetime"}
+price={plan.price === 0 ? t("free") : `₹${plan.price}`}
+duration={plan.duration || t("lifetime")}
               features={plan.features || [
-                "AI Career Mapping",
-                "OTR Profile Identity",
-                "Basic Exam Notifications",
-                "Community Access"
+                t("aiCareerMapping"),
+                t("otrProfileIdentity"),
+                t("basicExamNotifications"),
+                t("communityAccess")
               ]}
               onPay={() => handlePay(plan)}
               onCreditPay={() => handlePayWithCredits(plan)}

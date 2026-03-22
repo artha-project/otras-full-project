@@ -141,7 +141,7 @@ export default function Dashboard({ user: propUser }) {
         <div className="bg-white rounded-xl p-4 text-center shadow-sm min-w-32">
 
           <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider mb-1">
-            {t("readiness")}
+            {t("readinessIndex")}
           </p>
 
           <p className="text-3xl font-bold text-blue-700">

@@ -9,14 +9,31 @@ const dictionaries = { en, hi, te };
 export function useTranslation() {
   const { language, setLanguage } = useContext(LanguageContext);
 
-  const t = (key) => {
-    return dictionaries[language]?.[key] || dictionaries.en?.[key] || key;
+  const t = (key, options = {}) => {
+    let text = dictionaries[language]?.[key] || dictionaries.en?.[key] || key;
+    
+    // Support interpolation: {{count}}
+    if (options && typeof options === 'object') {
+      Object.keys(options).forEach(prop => {
+        text = text.replace(new RegExp(`{{${prop}}}`, 'g'), options[prop]);
+      });
+    }
+    
+    return text;
   };
 
   return { t, language, setLanguage };
 }
 
 // Keep backward compatible named export
-export function translate(language, key) {
-  return dictionaries[language]?.[key] || dictionaries.en?.[key] || key;
+export function translate(language, key, options = {}) {
+  let text = dictionaries[language]?.[key] || dictionaries.en?.[key] || key;
+
+  if (options && typeof options === 'object') {
+    Object.keys(options).forEach(prop => {
+      text = text.replace(new RegExp(`{{${prop}}}`, 'g'), options[prop]);
+    });
+  }
+
+  return text;
 }
