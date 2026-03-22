@@ -3,6 +3,7 @@ import axios from "axios";
 import { CreditCard, CheckCircle2, Zap, Sparkles } from "lucide-react";
 import TierCard from "../components/TierCard";
 import { useTranslation } from "../hooks/useTranslation";
+import { loadScript } from "../utils/loadScript";
 
 export default function Subscriptions({ user }) {
   const { t } = useTranslation();
@@ -66,6 +67,9 @@ setLoading(false);
 
     try {
       setProcessingId(plan.id);
+
+      // Load Razorpay script dynamically
+      await loadScript("https://checkout.razorpay.com/v1/checkout.js");
       
       const token = localStorage.getItem("token");
       if (!token) {

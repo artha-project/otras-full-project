@@ -739,7 +739,7 @@ export default function StudyPlan({ user: propUser }) {
       </div>
 
       {/* Add this CSS to your global styles or index.css */}
-      <style jsx>{`
+      <style>{`
         .blurred-content {
           filter: blur(4px);
           transition: filter 0.3s ease;
