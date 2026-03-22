@@ -72,7 +72,6 @@ let ExamService = class ExamService {
                     take: 5,
                     include: {
                         questions: {
-                            take: 50,
                             include: { subject: true },
                         },
                     },
@@ -92,7 +91,7 @@ let ExamService = class ExamService {
                 if (questions.length > 0) {
                     const selectedQuestions = questions
                         .sort(() => 0.5 - Math.random())
-                        .slice(0, exam.noOfQuestions || questions.length)
+                        .slice(0, exam.noOfQuestions || 100)
                         .map(q => ({ id: q.id }));
                     const newTest = await this.prisma.test.create({
                         data: {

@@ -15,26 +15,26 @@ export declare class PaymentController {
         message: string;
         payment: {
             subscription: {
-                createdAt: Date;
                 id: number;
+                createdAt: Date;
                 title: string;
                 price: number;
                 features: string[];
                 isRecommended: boolean;
             };
         } & {
+            id: number;
+            createdAt: Date;
+            updatedAt: Date;
+            userId: number;
+            status: string;
+            subscriptionId: number;
             razorpayOrderId: string;
             razorpayPaymentId: string | null;
             razorpaySignature: string | null;
             amount: number;
             currency: string;
-            status: string;
-            createdAt: Date;
-            updatedAt: Date;
             paymentMethod: string;
-            id: number;
-            userId: number;
-            subscriptionId: number;
         };
     }>;
     payWithCredits(req: any, dto: {
@@ -46,41 +46,30 @@ export declare class PaymentController {
     }>;
     getPaymentsByUser(userId: string): Promise<({
         subscription: {
-            createdAt: Date;
             id: number;
+            createdAt: Date;
             title: string;
             price: number;
             features: string[];
             isRecommended: boolean;
         };
     } & {
+        id: number;
+        createdAt: Date;
+        updatedAt: Date;
+        userId: number;
+        status: string;
+        subscriptionId: number;
         razorpayOrderId: string;
         razorpayPaymentId: string | null;
         razorpaySignature: string | null;
         amount: number;
         currency: string;
-        status: string;
-        createdAt: Date;
-        updatedAt: Date;
         paymentMethod: string;
-        id: number;
-        userId: number;
-        subscriptionId: number;
     })[]>;
     getAllPayments(): Promise<({
-        subscription: {
-            createdAt: Date;
-            id: number;
-            title: string;
-            price: number;
-            features: string[];
-            isRecommended: boolean;
-        };
         user: {
-            createdAt: Date;
-            updatedAt: Date;
             id: number;
-            credits: number;
             firstName: string;
             lastName: string;
             email: string;
@@ -92,21 +81,32 @@ export declare class PaymentController {
             careerPreference: string | null;
             domicile: string | null;
             pincode: string | null;
+            createdAt: Date;
+            updatedAt: Date;
+            credits: number;
             referralCode: string;
             preferredLanguage: string;
         };
+        subscription: {
+            id: number;
+            createdAt: Date;
+            title: string;
+            price: number;
+            features: string[];
+            isRecommended: boolean;
+        };
     } & {
+        id: number;
+        createdAt: Date;
+        updatedAt: Date;
+        userId: number;
+        status: string;
+        subscriptionId: number;
         razorpayOrderId: string;
         razorpayPaymentId: string | null;
         razorpaySignature: string | null;
         amount: number;
         currency: string;
-        status: string;
-        createdAt: Date;
-        updatedAt: Date;
         paymentMethod: string;
-        id: number;
-        userId: number;
-        subscriptionId: number;
     })[]>;
 }

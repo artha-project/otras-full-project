@@ -4,6 +4,7 @@ export declare class UserService {
     constructor(prisma: PrismaService);
     create(data: any): Promise<{
         credits: number;
+        id: number;
         firstName: string;
         lastName: string;
         email: string;
@@ -19,9 +20,9 @@ export declare class UserService {
         updatedAt: Date;
         referralCode: string;
         preferredLanguage: string;
-        id: number;
     } | null>;
     findByEmail(email: string): Promise<{
+        id: number;
         firstName: string;
         lastName: string;
         email: string;
@@ -38,9 +39,9 @@ export declare class UserService {
         credits: number;
         referralCode: string;
         preferredLanguage: string;
-        id: number;
     } | null>;
     findByOtrId(otrId: string): Promise<{
+        id: number;
         firstName: string;
         lastName: string;
         email: string;
@@ -57,10 +58,10 @@ export declare class UserService {
         credits: number;
         referralCode: string;
         preferredLanguage: string;
-        id: number;
     } | null>;
     findById(id: number): Promise<{
         credits: number;
+        id: number;
         firstName: string;
         lastName: string;
         email: string;
@@ -76,9 +77,9 @@ export declare class UserService {
         updatedAt: Date;
         referralCode: string;
         preferredLanguage: string;
-        id: number;
     } | null>;
     findAll(): Promise<{
+        id: number;
         firstName: string;
         lastName: string;
         email: string;
@@ -95,9 +96,9 @@ export declare class UserService {
         credits: number;
         referralCode: string;
         preferredLanguage: string;
-        id: number;
     }[]>;
     update(id: number, data: any): Promise<{
+        id: number;
         firstName: string;
         lastName: string;
         email: string;
@@ -114,9 +115,9 @@ export declare class UserService {
         credits: number;
         referralCode: string;
         preferredLanguage: string;
-        id: number;
     }>;
     remove(id: number): Promise<{
+        id: number;
         firstName: string;
         lastName: string;
         email: string;
@@ -133,13 +134,13 @@ export declare class UserService {
         credits: number;
         referralCode: string;
         preferredLanguage: string;
-        id: number;
     }>;
     private generateOtrId;
     getArthaProfile(userId: string): Promise<({
         feedback: {
-            createdAt: Date;
             id: string;
+            createdAt: Date;
+            tier: number;
             profileId: string;
             logicalFoundation: string | null;
             subjectDepth: string | null;
@@ -149,13 +150,12 @@ export declare class UserService {
             preparationAdvice: string | null;
             speedInsight: string | null;
             subjectStrength: string | null;
-            tier: number;
             weakAreas: string | null;
             examSuggestions: string | null;
         } | null;
     } & {
-        createdAt: Date;
         id: string;
+        createdAt: Date;
         userId: string;
         otrCompleted: boolean;
         logicalScore: number;

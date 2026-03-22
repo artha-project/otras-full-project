@@ -6,12 +6,12 @@ export declare class TestService {
     constructor(prisma: PrismaService);
     create(createTestDto: CreateTestDto): Promise<{
         exam: {
-            id: number;
-            createdAt: Date;
-            updatedAt: Date;
             name: string;
+            createdAt: Date;
+            id: number;
             cutoff: number | null;
             syllabus: string | null;
+            updatedAt: Date;
             eligibility: string | null;
             longDescription: string | null;
             noOfQuestions: number | null;
@@ -23,22 +23,19 @@ export declare class TestService {
             id: number;
         }[];
     } & {
-        id: number;
-        createdAt: Date;
         name: string;
+        createdAt: Date;
+        id: number;
         examId: number;
     }>;
     findAll(): import(".prisma/client").Prisma.PrismaPromise<({
-        _count: {
-            questions: number;
-        };
         exam: {
-            id: number;
-            createdAt: Date;
-            updatedAt: Date;
             name: string;
+            createdAt: Date;
+            id: number;
             cutoff: number | null;
             syllabus: string | null;
+            updatedAt: Date;
             eligibility: string | null;
             longDescription: string | null;
             noOfQuestions: number | null;
@@ -46,20 +43,23 @@ export declare class TestService {
             shortDescription: string | null;
             applicationStatus: string;
         };
+        _count: {
+            questions: number;
+        };
     } & {
-        id: number;
-        createdAt: Date;
         name: string;
+        createdAt: Date;
+        id: number;
         examId: number;
     })[]>;
     findOne(id: number): import(".prisma/client").Prisma.Prisma__TestClient<({
         exam: {
-            id: number;
-            createdAt: Date;
-            updatedAt: Date;
             name: string;
+            createdAt: Date;
+            id: number;
             cutoff: number | null;
             syllabus: string | null;
+            updatedAt: Date;
             eligibility: string | null;
             longDescription: string | null;
             noOfQuestions: number | null;
@@ -68,29 +68,29 @@ export declare class TestService {
             applicationStatus: string;
         };
         questions: {
-            id: number;
             createdAt: Date;
+            id: number;
             text: string;
             options: string[];
             answer: string;
             subjectId: number;
         }[];
     } & {
-        id: number;
-        createdAt: Date;
         name: string;
+        createdAt: Date;
+        id: number;
         examId: number;
     }) | null, null, import("@prisma/client/runtime/library").DefaultArgs>;
     update(id: number, updateTestDto: UpdateTestDto): import(".prisma/client").Prisma.Prisma__TestClient<{
-        id: number;
-        createdAt: Date;
         name: string;
+        createdAt: Date;
+        id: number;
         examId: number;
     }, never, import("@prisma/client/runtime/library").DefaultArgs>;
     remove(id: number): import(".prisma/client").Prisma.Prisma__TestClient<{
-        id: number;
-        createdAt: Date;
         name: string;
+        createdAt: Date;
+        id: number;
         examId: number;
     }, never, import("@prisma/client/runtime/library").DefaultArgs>;
 }

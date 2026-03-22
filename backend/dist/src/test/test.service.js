@@ -28,18 +28,19 @@ let TestService = class TestService {
         if (!exam.subjects || exam.subjects.length === 0) {
             throw new Error('This exam has no associated subjects. Please add subjects to the exam before creating a test.');
         }
-        const questionIds = [];
-        const questionsPerSubject = Math.max(5, Math.floor((exam.noOfQuestions || 50) / exam.subjects.length));
-        for (const subject of exam.subjects) {
-            const questions = await this.prisma.question.findMany({
-                where: { subjectId: subject.id },
-                select: { id: true }
-            });
-            if (questions.length > 0) {
-                const shuffled = questions.sort(() => 0.5 - Math.random());
-                questionIds.push(...shuffled.slice(0, questionsPerSubject).map(q => ({ id: q.id })));
-            }
+        const subjectIds = exam.subjects.map(s => s.id);
+        const questions = await this.prisma.question.findMany({
+            where: { subjectId: { in: subjectIds } },
+            select: { id: true }
+        });
+        if (questions.length === 0) {
+            throw new Error('No questions found for the subjects associated with this exam. Please add questions to the subjects first.');
         }
+        const targetCount = exam.noOfQuestions || 100;
+        const questionIds = questions
+            .sort(() => 0.5 - Math.random())
+            .slice(0, targetCount)
+            .map(q => ({ id: q.id }));
         if (questionIds.length === 0) {
             throw new Error('No questions found for the subjects associated with this exam. Please add questions to the subjects first.');
         }
