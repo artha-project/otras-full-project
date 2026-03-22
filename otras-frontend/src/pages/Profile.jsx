@@ -117,12 +117,12 @@ export default function Profile({ onAuthSuccess, user: currentUser }) {
   return (
     <div>
       <h1 className="text-2xl font-bold text-blue-700 mb-1">
-        {currentUser ? t('Profile Management') : t('OTR Registration Form')}
+        {currentUser ? t('profileManagement') : t('otrRegistrationForm')}
       </h1>
       <p className="text-slate-500 text-sm mb-5">
         {currentUser
-          ? t('Manage Identity')
-          : t('Fill in the details below')}
+          ? t('manageIdentity')
+          : t('fillDetailsBelow')}
       </p>
 
       {error && (
@@ -139,7 +139,7 @@ export default function Profile({ onAuthSuccess, user: currentUser }) {
           <div>
             <p className="text-yellow-700 font-semibold text-sm">{t("registrationPending")}</p>
             <p className="text-yellow-600 text-sm">
-              {t("complete Form")}
+              {t("completeForm")}
             </p>
           </div>
         </div>
@@ -156,8 +156,8 @@ export default function Profile({ onAuthSuccess, user: currentUser }) {
                   <User size={18} className="text-blue-500" />
                 </div>
                 <div>
-                  <h2 className="font-bold text-slate-800 text-lg">Personal Information</h2>
-                  <p className="text-slate-500 text-sm">Your basic details and contact information</p>
+                  <h2 className="font-bold text-slate-800 text-lg">{t('personalInformation')}</h2>
+                  <p className="text-slate-500 text-sm">{t('basicDetailsContact')}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -182,7 +182,7 @@ export default function Profile({ onAuthSuccess, user: currentUser }) {
             <div className="grid grid-cols-2 gap-4">
               <FormField label={t("firstName")}>
                 <TextInput
-                  placeholder={t("Enter Your First Name")}
+                  placeholder={t("enterFirstName")}
                   value={formData.firstName}
                   disabled={currentUser && !isEditing}
                   onChange={(e) => handleChange('firstName', e.target.value)}
@@ -190,7 +190,7 @@ export default function Profile({ onAuthSuccess, user: currentUser }) {
               </FormField>
               <FormField label={t("lastName")}>
                 <TextInput
-                  placeholder={t("Enter Your Last Name")}
+                  placeholder={t("enterLastName")}
                   value={formData.lastName}
                   disabled={currentUser && !isEditing}
                   onChange={(e) => handleChange('lastName', e.target.value)}
@@ -198,7 +198,7 @@ export default function Profile({ onAuthSuccess, user: currentUser }) {
               </FormField>
               <FormField label={t("emailAddress")}>
                 <TextInput
-                  placeholder="example@gmail.com"
+                  placeholder={t("emailPlaceholder")}
                   value={formData.email}
                   disabled={currentUser && !isEditing}
                   onChange={(e) => handleChange('email', e.target.value)}
@@ -206,7 +206,7 @@ export default function Profile({ onAuthSuccess, user: currentUser }) {
               </FormField>
               <FormField label={t("age")}>
                 <TextInput
-                  placeholder="e.g. 24"
+                  placeholder={t("agePlaceholder")}
                   value={formData.age}
                   disabled={currentUser && !isEditing}
                   onChange={(e) => handleChange('age', e.target.value)}
@@ -214,7 +214,7 @@ export default function Profile({ onAuthSuccess, user: currentUser }) {
               </FormField>
               <FormField label={t("category")}>
                 <SelectInput
-                  options={['General', 'OBC', 'SC', 'ST', 'EWS']}
+                  options={[t('categoryGeneral'), t('categoryOBC'), t('categorySC'), t('categoryST'), t('categoryEWS')]}
                   value={formData.category}
                   disabled={currentUser && !isEditing}
                   onChange={(e) => handleChange('category', e.target.value)}
@@ -236,7 +236,7 @@ export default function Profile({ onAuthSuccess, user: currentUser }) {
                   </FormField>
                   <FormField label={t("referralCodeOptional")}>
                     <TextInput
-                      placeholder="e.g. REF873452"
+                      placeholder={t("referralPlaceholder")}
                       value={formData.referralCode}
                       onChange={(e) => handleChange('referralCode', e.target.value.toUpperCase())}
                     />
@@ -254,18 +254,18 @@ export default function Profile({ onAuthSuccess, user: currentUser }) {
                 <BookOpen size={18} className="text-blue-500" />
               </div>
               <div>
-                <h2 className="font-bold text-slate-800 text-lg">Education & Location Details</h2>
-                <p className="text-slate-500 text-sm">Your academic qualifications, career preferences, and location information</p>
+                <h2 className="font-bold text-slate-800 text-lg">{t('educationLocationDetails')}</h2>
+                <p className="text-slate-500 text-sm">{t('academicCareerLocation')}</p>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               {/* Education Section */}
               <div className="col-span-2 mb-2">
-                <h3 className="text-sm font-semibold text-slate-700 mb-3 pb-2 border-b border-slate-200">Educational Information</h3>
+                <h3 className="text-sm font-semibold text-slate-700 mb-3 pb-2 border-b border-slate-200">{t('educationalInformation')}</h3>
               </div>
               <FormField label={t("highestDegree")}>
                 <SelectInput
-                  options={["Bachelor's Degree", "Master's Degree", '12th / HSC', '10th / SSC']}
+                  options={[t('bachelorsDegree'), t('mastersDegree'), t('12thHSC'), t('10thSSC')]}
                   value={formData.highestDegree}
                   disabled={currentUser && !isEditing}
                   onChange={(e) => handleChange('highestDegree', e.target.value)}
@@ -273,7 +273,7 @@ export default function Profile({ onAuthSuccess, user: currentUser }) {
               </FormField>
               <FormField label={t("careerPreference")}>
                 <TextInput
-                  placeholder="e.g. Civil Services"
+                  placeholder={t("careerPlaceholder")}
                   value={formData.careerPreference}
                   disabled={currentUser && !isEditing}
                   onChange={(e) => handleChange('careerPreference', e.target.value)}
@@ -282,7 +282,7 @@ export default function Profile({ onAuthSuccess, user: currentUser }) {
 
               {/* Location Section */}
               <div className="col-span-2 mb-2 mt-2">
-                <h3 className="text-sm font-semibold text-slate-700 mb-3 pb-2 border-b border-slate-200">Location Information</h3>
+                <h3 className="text-sm font-semibold text-slate-700 mb-3 pb-2 border-b border-slate-200">{t('locationInformation')}</h3>
               </div>
               <FormField label={t("State")}>
                 <div className="relative">
@@ -322,7 +322,7 @@ export default function Profile({ onAuthSuccess, user: currentUser }) {
                           </div>
                         ))
                       ) : (
-                        <div className="px-4 py-3 text-sm text-slate-500 text-center">No states found</div>
+                        <div className="px-4 py-3 text-sm text-slate-500 text-center">{t('noStatesFound')}</div>
                       )}
                     </div>
                   )}
@@ -330,7 +330,7 @@ export default function Profile({ onAuthSuccess, user: currentUser }) {
               </FormField>
               <FormField label={t("pincode")}>
                 <TextInput
-                  placeholder="e.g. 400026"
+                  placeholder={t("pincodePlaceholder")}
                   value={formData.pincode}
                   disabled={currentUser && !isEditing}
                   onChange={(e) => handleChange('pincode', e.target.value)}
@@ -371,7 +371,7 @@ export default function Profile({ onAuthSuccess, user: currentUser }) {
                 style={{ background: '#1e3a8a' }}
               >
                 {loading ? (
-                  currentUser ? 'Saving...' : 'Generating...'
+                  currentUser ? t('saving') : t('generating')
                 ) : (
                   <>
                     {currentUser ? <Save size={16} /> : null}
@@ -392,23 +392,23 @@ export default function Profile({ onAuthSuccess, user: currentUser }) {
           >
             <div className="flex items-start justify-between mb-4">
               <div>
-                <h3 className="font-bold text-lg">Your OTR ID</h3>
-                <p className="text-blue-200 text-sm">Unique identity number for verification</p>
+                <h3 className="font-bold text-lg">{t('yourOtrId')}</h3>
+                <p className="text-blue-200 text-sm">{t('uniqueIdVerification')}</p>
               </div>
               <Shield size={28} className="text-blue-300" />
             </div>
             <div className="bg-blue-800/60 rounded-xl p-4 mb-4">
-              <p className="text-blue-300 text-xs uppercase tracking-widest mb-1">OTR Registration ID</p>
+              <p className="text-blue-300 text-xs uppercase tracking-widest mb-1">{t('otrRegistrationIdLabel')}</p>
               <p className="text-2xl font-extrabold tracking-widest text-white">
-                {currentUser ? currentUser.otrId : (registeredUser ? registeredUser.otrId : 'Not Generated Yet')}
+                {currentUser ? currentUser.otrId : (registeredUser ? registeredUser.otrId : t('notGeneratedYet'))}
               </p>
             </div>
             <div className="flex items-start gap-2 bg-blue-800/40 rounded-lg p-3 text-xs text-blue-300">
               <AlertCircle size={14} className="flex-shrink-0 mt-0.5 text-cyan-400" />
               <div>
-                <p className="font-bold text-cyan-400 mb-0.5">How It Works:</p>
-                <p>Your OTR ID is automatically generated after registration</p>
-                <p className="mt-1">Complete the form to generate your unique ID</p>
+                <p className="font-bold text-cyan-400 mb-0.5">{t('howItWorks')}</p>
+                <p>{t('otrAutoGenerated')}</p>
+                <p className="mt-1">{t('completeFormToGenerate')}</p>
               </div>
             </div>
           </div>
@@ -420,22 +420,22 @@ export default function Profile({ onAuthSuccess, user: currentUser }) {
 
           {/* Profile Completion Status */}
           <div className="bg-white rounded-xl p-5 border border-slate-200">
-            <h3 className="font-bold text-slate-800 text-lg mb-3">Profile Completion Status</h3>
+            <h3 className="font-bold text-slate-800 text-lg mb-3">{t('profileCompletionStatus')}</h3>
             <div className="h-2 bg-slate-100 rounded-full mb-4">
               <div className="h-2 rounded-full bg-cyan-400" style={{ width: (currentUser || registeredUser) ? '100%' : '15%' }} />
             </div>
             <div className="space-y-2.5">
               {[
-                { label: 'Personal Information', completed: currentUser || registeredUser },
-                { label: 'Education & Location Details', completed: currentUser || registeredUser },
-                { label: 'Account Security', completed: currentUser || registeredUser }
+                { label: t('personalInformation'), completed: currentUser || registeredUser },
+                { label: t('educationLocationDetails'), completed: currentUser || registeredUser },
+                { label: t('accountSecurity'), completed: currentUser || registeredUser }
               ].map((item) => (
                 <div key={item.label} className="flex items-center justify-between">
                   <span className="text-slate-600 text-sm">{item.label}</span>
                   {item.completed ? (
                     <CheckCircle2 size={14} className="text-green-500" />
                   ) : (
-                    <span className="text-red-500 text-xs font-semibold">Pending</span>
+                    <span className="text-red-500 text-xs font-semibold">{t('pending')}</span>
                   )}
                 </div>
               ))}
