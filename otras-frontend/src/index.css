@@ -462,7 +462,7 @@ body {
 }
 
 .section-title {
-  @apply text-3xl font-extrabold text-slate-900 md:text-5xl;
+  @apply text-xl font-extrabold text-slate-900 md:text-5xl;
 }
 
 .section-subtitle {
