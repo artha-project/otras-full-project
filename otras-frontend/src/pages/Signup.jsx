@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import signupImage from "../LandingPage/assets/signup-image.png";
 
@@ -13,10 +13,25 @@ export default function Signup() {
     phone: "",
     password: "",
     confirmPassword: "",
+    referralCode: localStorage.getItem('referralCode') || "",
   });
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  useEffect(() => {
+    // Sync referral code from URL or localStorage into state
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get('ref');
+    const stored = localStorage.getItem('referralCode');
+    
+    if (ref && formData.referralCode !== ref.toUpperCase()) {
+      setFormData(prev => ({ ...prev, referralCode: ref.toUpperCase() }));
+      localStorage.setItem('referralCode', ref.toUpperCase());
+    } else if (stored && !formData.referralCode) {
+      setFormData(prev => ({ ...prev, referralCode: stored }));
+    }
+  }, []);
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -150,6 +165,23 @@ export default function Signup() {
                 >
                   {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
+              </div>
+
+              {/* REFERRAL CODE */}
+              <div className="relative">
+                <input
+                  type="text"
+                  name="referralCode"
+                  placeholder="Referral Code (Optional)"
+                  value={formData.referralCode}
+                  onChange={handleChange}
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-gray-800 outline-none focus:border-blue-600"
+                />
+                {formData.referralCode && (
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-full border border-green-200">
+                    Applied 🎉
+                  </span>
+                )}
               </div>
 
               {/* BUTTON */}

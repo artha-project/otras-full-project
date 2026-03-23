@@ -61,6 +61,12 @@ export class UserService {
                                 data: { credits: { increment: 10 } }
                             });
 
+                            // Give new user (referee) 10 credits
+                            await tx.user.update({
+                                where: { id: newUser.id },
+                                data: { credits: { increment: 10 } }
+                            });
+
                             // Log referral
                             await tx.referral.create({
                                 data: {

@@ -16,28 +16,39 @@ export class ReferralService {
   }
 
   async getReferralStats(referrerId: number) {
-    const [referrals, referrer] = await Promise.all([
+    const [referralsMade, referrer] = await Promise.all([
       this.prisma.referral.findMany({ where: { referrerId } }),
       this.prisma.user.findUnique({
         where: { id: referrerId },
-        select: { credits: true, referralCode: true },
+        select: { credits: true, referralCode: true, otrId: true },
       }),
     ]);
 
-    const totalReferrals = referrals.length;
-    const successReferrals = referrals.filter(r => r.status === 'Qualified Referral').length;
-    const creditsEarned = referrals.reduce((sum, r) => sum + (r.creditsEarned || 0), 0);
+    // Also find if this user was a referee and got credits for joining
+    const joinedViaReferral = referrer ? await this.prisma.referral.findFirst({
+      where: { refereeOtrId: referrer.otrId }
+    }) : null;
+
+    const totalReferrals = referralsMade.length;
+    const successReferrals = referralsMade.filter(r => r.status === 'Qualified Referral').length;
+    
+    // Credits earned = (credits from friends you referred) + (credits you got for joining)
+    let creditsEarned = referralsMade.reduce((sum, r) => sum + (r.creditsEarned || 0), 0);
+    if (joinedViaReferral) {
+      creditsEarned += 10; // The joining bonus
+    }
     const mockTestsEarned = Math.floor(successReferrals / 10);
 
-    return {
+    const result = {
       totalReferrals,
       successReferrals,
       creditsEarned,
       mockTestsEarned,
       availableCredits: referrer?.credits ?? 0,
       referralCode: referrer?.referralCode ?? '',
-      referrals,
+      referrals: referralsMade,
     };
+    return result;
   }
 
   async getReferralHistory(referrerId: number) {

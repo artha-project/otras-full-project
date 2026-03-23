@@ -80,7 +80,7 @@ export default function ArthaTest({ user }) {
 
       setActiveAssessmentId(startId);
       setActiveTest(test);
-      
+
       // Initialize timer (duration is in minutes)
       const durationVal = parseInt(test.duration, 10) || 60;
       const durationInSeconds = durationVal * 60;
@@ -162,7 +162,7 @@ export default function ArthaTest({ user }) {
         const question = activeTest.questions.find(q => q.id === questionId);
         const isCorrect = question.answer === selectedOption;
         const totalQuestions = activeTest.questions?.length || exam?.noOfQuestions || 15;
-        
+
         const response = await axios.post("http://localhost:4000/artha/attempt-question", {
           assessmentId: activeAssessmentId,
           questionId,
@@ -180,7 +180,7 @@ export default function ArthaTest({ user }) {
         console.log(`Attempted Questions: ${metrics.attempted}`);
         console.log(`Total Questions In Tier: ${totalQuestions}`);
         console.log(`Calculated Progress: ${metrics.progress}%`);
-        
+
         if (state?.tier === "3") {
           console.log(`Accuracy: ${metrics.accuracy}%`);
           console.log(`Average Speed: ${metrics.speed} sec/question`);
@@ -259,7 +259,7 @@ export default function ArthaTest({ user }) {
         });
       } else {
         const targetTier = state?.tier;
-        
+
         if (targetTier === "2" || targetTier === "3") {
           console.log(`ARTHA: Submitting Tier-${targetTier} exam results`);
           await axios.post("http://localhost:4000/results", {
@@ -272,51 +272,51 @@ export default function ArthaTest({ user }) {
 
           if (targetTier === "2") {
             console.log("ARTHA: Updating Tier-2 progress");
-            const resp = await axios.post("http://localhost:4000/artha/tier2", { 
-                userId: user.id,
-                assessmentId: activeAssessmentId,
-                language,
-                attemptedCount: currentAnswers.length,
-                totalQuestions: activeTest.questions?.length || 15
+            const resp = await axios.post("http://localhost:4000/artha/tier2", {
+              userId: user.id,
+              assessmentId: activeAssessmentId,
+              language,
+              attemptedCount: currentAnswers.length,
+              totalQuestions: activeTest.questions?.length || 15
             });
             setArthaStatus(resp.data);
           } else if (targetTier === "3") {
             console.log("ARTHA: Updating Tier-3 progress and triggering AI feedback");
-            const resp = await axios.post("http://localhost:4000/artha/tier3", { 
-                userId: user.id,
-                assessmentId: activeAssessmentId,
-                language,
-                attemptedCount: currentAnswers.length,
-                totalQuestions: activeTest.questions?.length || 15
+            const resp = await axios.post("http://localhost:4000/artha/tier3", {
+              userId: user.id,
+              assessmentId: activeAssessmentId,
+              language,
+              attemptedCount: currentAnswers.length,
+              totalQuestions: activeTest.questions?.length || 15
             });
             setArthaStatus(resp.data);
           }
           console.log(`ARTHA: Tier-${targetTier} successfully processed`);
         } else {
-            // ARTHA Tier 1 Integration
-            console.log("ARTHA: Submitting Tier 1 assessment results");
-            
-            // Map subjects to logical, quant, verbal (Matching Seed names)
-            const logicalScore = subjectWise["logical"]?.score || 0;
-            const quantScore = subjectWise["quant"]?.score || 0;
-            const verbalScore = subjectWise["verbal"]?.score || 0;
+          // ARTHA Tier 1 Integration
+          console.log("ARTHA: Submitting Tier 1 assessment results");
 
-            const payload = {
-                userId: user.id,
-                logicalScore,
-                quantScore,
-                verbalScore,
-                attemptedCount: currentAnswers.length,
-                totalQuestions: questions.length || 15
-            };
+          // Map subjects to logical, quant, verbal (Matching Seed names)
+          const logicalScore = subjectWise["logical"]?.score || 0;
+          const quantScore = subjectWise["quant"]?.score || 0;
+          const verbalScore = subjectWise["verbal"]?.score || 0;
 
-            const resp = await axios.post("http://localhost:4000/artha/tier1", {
-                ...payload,
-                assessmentId: activeAssessmentId,
-                language
-            });
-            console.log("ARTHA: Tier 1 successfully processed", resp.data);
-            setArthaStatus(resp.data);
+          const payload = {
+            userId: user.id,
+            logicalScore,
+            quantScore,
+            verbalScore,
+            attemptedCount: currentAnswers.length,
+            totalQuestions: questions.length || 15
+          };
+
+          const resp = await axios.post("http://localhost:4000/artha/tier1", {
+            ...payload,
+            assessmentId: activeAssessmentId,
+            language
+          });
+          console.log("ARTHA: Tier 1 successfully processed", resp.data);
+          setArthaStatus(resp.data);
         }
 
       }
@@ -338,14 +338,14 @@ export default function ArthaTest({ user }) {
             <CheckCircle2 size={32} />
           </div>
           <h1 className="text-3xl font-bold text-slate-800 mb-1">
-            {arthaStatus?.feedback?.tier === 3 ? t("performanceIntelligenceInsight") : 
-             arthaStatus?.feedback?.tier === 2 ? t("subjectCompetencyInsight") : 
-             t("testCompleted")}
+            {arthaStatus?.feedback?.tier === 3 ? t("performanceIntelligenceInsight") :
+              arthaStatus?.feedback?.tier === 2 ? t("subjectCompetencyInsight") :
+                t("testCompleted")}
           </h1>
           <p className="text-slate-500 mb-6">
-            {arthaStatus?.feedback?.tier === 3 ? t("tier3Processed") : 
-             arthaStatus?.feedback?.tier === 2 ? t("tier2Processed") : 
-             t("tier1Processed")}
+            {arthaStatus?.feedback?.tier === 3 ? t("tier3Processed") :
+              arthaStatus?.feedback?.tier === 2 ? t("tier2Processed") :
+                t("tier1Processed")}
           </p>
 
           {/* Score Summary */}
@@ -437,9 +437,8 @@ export default function ArthaTest({ user }) {
                   ([subject, stats], i) => (
                     <tr
                       key={subject}
-                      className={`border-b border-slate-100 ${
-                        i % 2 === 0 ? "bg-white" : "bg-slate-50/50"
-                      }`}
+                      className={`border-b border-slate-100 ${i % 2 === 0 ? "bg-white" : "bg-slate-50/50"
+                        }`}
                     >
                       <td className="p-4 font-semibold text-slate-700">
                         {subject}
@@ -472,16 +471,16 @@ export default function ArthaTest({ user }) {
             <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto shadow-sm">
               <div className="w-6 h-6 border-2 border-indigo-200 border-t-indigo-600 rounded-full animate-spin" />
             </div>
-            <h3 className="font-bold text-slate-700">{t("generatingAnalysis")}</h3>
-            <p className="text-slate-500 text-sm max-w-sm mx-auto">{t("aiProcessingDesc")}</p>
-            <button 
-                onClick={async () => {
-                   const resp = await axios.get(`http://localhost:4000/artha/status/${user.id}`);
-                   setArthaStatus(resp.data);
-                }}
-                className="text-indigo-600 font-bold text-sm hover:underline"
+            <h3 className="font-bold text-slate-700">{t("Generating Analysis")}</h3>
+            <p className="text-slate-500 text-sm max-w-sm mx-auto">{t("AI Processing")}</p>
+            <button
+              onClick={async () => {
+                const resp = await axios.get(`http://localhost:4000/artha/status/${user.id}`);
+                setArthaStatus(resp.data);
+              }}
+              className="text-indigo-600 font-bold text-sm hover:underline"
             >
-                {t("refreshInsights")}
+              {t("Refresh Insights")}
             </button>
           </div>
         )}
@@ -547,7 +546,7 @@ export default function ArthaTest({ user }) {
             </span>
           </div>
           <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden shadow-inner">
-            <div 
+            <div
               className="bg-indigo-600 h-full transition-all duration-700 ease-out shadow-[0_0_15px_rgba(79,70,229,0.4)] relative"
               style={{ width: `${Math.min(100, Math.round((answers.length / (activeTest.questions?.length || 15)) * 100))}%` }}
             >
@@ -569,11 +568,10 @@ export default function ArthaTest({ user }) {
                   <button
                     key={sub}
                     onClick={() => setCurrentSection(sub)}
-                    className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
-                      currentSection === sub
+                    className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-all ${currentSection === sub
                         ? "bg-indigo-600 text-white shadow-lg shadow-indigo-100"
                         : "text-slate-600 hover:bg-slate-50"
-                    }`}
+                      }`}
                   >
                     {sub}
                     <ChevronRight
@@ -601,13 +599,12 @@ export default function ArthaTest({ user }) {
                   return (
                     <div
                       key={q.id}
-                      className={`aspect-square rounded-lg flex items-center justify-center text-xs font-bold border transition-all ${
-                        isAnswered
+                      className={`aspect-square rounded-lg flex items-center justify-center text-xs font-bold border transition-all ${isAnswered
                           ? "bg-green-500 border-green-600 text-white"
                           : isCurrentSection
-                          ? "bg-indigo-50 border-indigo-200 text-indigo-600"
-                          : "bg-slate-50 border-slate-100 text-slate-400"
-                      }`}
+                            ? "bg-indigo-50 border-indigo-200 text-indigo-600"
+                            : "bg-slate-50 border-slate-100 text-slate-400"
+                        }`}
                     >
                       {i + 1}
                     </div>
@@ -656,12 +653,11 @@ export default function ArthaTest({ user }) {
                     <button
                       key={opt}
                       onClick={() => handleAnswerChange(q.id, opt)}
-                      className={`p-5 rounded-2xl border-2 text-left font-semibold transition-all ${
-                        answers.find((a) => a.questionId === q.id)
+                      className={`p-5 rounded-2xl border-2 text-left font-semibold transition-all ${answers.find((a) => a.questionId === q.id)
                           ?.selectedOption === opt
                           ? "bg-indigo-600 border-indigo-700 text-white shadow-xl translate-y-[-2px]"
                           : "border-slate-100 text-slate-600 hover:border-indigo-200 hover:bg-slate-50"
-                      }`}
+                        }`}
                     >
                       {opt}
                     </button>

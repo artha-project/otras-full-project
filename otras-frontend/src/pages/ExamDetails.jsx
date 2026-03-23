@@ -58,7 +58,7 @@ export default function ExamDetails({ user }) {
                             {t("liveNotification")}
                         </span>
                         <span className="text-slate-400 text-xs font-bold flex items-center gap-1.5">
-                            <Calendar size={14} /> Posted on Mar 10, 2026
+                            <Calendar size={14} /> {t("postedOn")} Mar 10, 2026
                         </span>
                     </div>
 
@@ -70,8 +70,8 @@ export default function ExamDetails({ user }) {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
                         {[
                             { icon: Shield, label: t('eligibilityNav'), value: exam.eligibility || 'Graduate' },
-                            { icon: MapPin, label: 'Location', value: 'All India' },
-                            { icon: Briefcase, label: 'Post', value: 'Grade A/B' },
+                            { icon: MapPin, label: t('location'), value: 'All India' },
+                            { icon: Briefcase, label: t('jobPost'), value: 'Grade A/B' },
                             { icon: Calendar, label: t('examDate'), value: exam.examDate || 'May 2026' },
                         ].map(({ icon: Icon, label, value }) => (
                             <div key={label} className="p-4 rounded-2xl bg-slate-50 border border-slate-100">

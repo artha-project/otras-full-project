@@ -50,6 +50,15 @@ export default function App() {
   const isAuthPage = ['/', '/login', '/signup', '/forgot-password'].includes(location.pathname);
 
   useEffect(() => {
+    // Capture referral code from URL
+    const params = new URLSearchParams(location.search);
+    const ref = params.get('ref');
+    if (ref) {
+      localStorage.setItem('referralCode', ref.toUpperCase());
+    }
+  }, [location.search]);
+
+  useEffect(() => {
     if (user?.id) {
       axios.get(`http://localhost:4000/users/${user.id}/dashboard`)
         .catch(err => {

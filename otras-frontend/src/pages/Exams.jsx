@@ -155,7 +155,7 @@ export default function Exams({ user }) {
                     ...exam,
                     tags: exam.subjects?.map((s) => s.name) || [],
                     deadline: '2026-04-30',
-                    status: 'Open'
+                    status: 'openStatus'
                   }}
                   saved={saved.includes(exam.id)}
                   onSave={handleSave}

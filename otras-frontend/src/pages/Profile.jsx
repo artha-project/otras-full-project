@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AlertCircle, User, BookOpen, MapPin, Shield, Lock, CheckCircle2, Edit2, Save, X, Gift } from 'lucide-react';
 import FormField, { TextInput, SelectInput } from '../components/FormField';
@@ -19,9 +19,9 @@ export default function Profile({ onAuthSuccess, user: currentUser }) {
     password: 'password',
     highestDegree: currentUser?.highestDegree || "Bachelor's Degree",
     careerPreference: currentUser?.careerPreference || '',
-    domicile: currentUser?.domicile || 'Select state',
+    domicile: currentUser?.domicile || 'selectState',
     pincode: currentUser?.pincode || '',
-    referralCode: ''
+    referralCode: localStorage.getItem('referralCode') || ''
   });
 
   const [registeredUser, setRegisteredUser] = useState(currentUser);
@@ -41,6 +41,20 @@ export default function Profile({ onAuthSuccess, user: currentUser }) {
     'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana', 'Tripura', 'Uttar Pradesh',
     'Uttarakhand', 'West Bengal'
   ];
+
+  useEffect(() => {
+    // Sync referral code from URL or localStorage into state
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get('ref');
+    const stored = localStorage.getItem('referralCode');
+    
+    if (ref && formData.referralCode !== ref.toUpperCase()) {
+      setFormData(prev => ({ ...prev, referralCode: ref.toUpperCase() }));
+      localStorage.setItem('referralCode', ref.toUpperCase());
+    } else if (stored && !formData.referralCode) {
+      setFormData(prev => ({ ...prev, referralCode: stored }));
+    }
+  }, []);
 
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -234,7 +248,16 @@ export default function Profile({ onAuthSuccess, user: currentUser }) {
                     </div>
                     <p className="text-slate-400 text-xs mt-1">{t("passwordFutureLogins")}</p>
                   </FormField>
-                  <FormField label={t("referralCodeOptional")}>
+                  <FormField label={
+                    <div className="flex items-center gap-2">
+                      {t("referralCodeOptional")}
+                      {formData.referralCode && (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-700 animate-pulse">
+                          {t("referralApplied") || "Referral Applied 🎉"}
+                        </span>
+                      )}
+                    </div>
+                  }>
                     <TextInput
                       placeholder={t("referralPlaceholder")}
                       value={formData.referralCode}
@@ -284,17 +307,17 @@ export default function Profile({ onAuthSuccess, user: currentUser }) {
               <div className="col-span-2 mb-2 mt-2">
                 <h3 className="text-sm font-semibold text-slate-700 mb-3 pb-2 border-b border-slate-200">{t('locationInformation')}</h3>
               </div>
-              <FormField label={t("State")}>
+              <FormField label={t("domicileState")}>
                 <div className="relative">
                   <input
                     type="text"
-                    placeholder="Search and select state..."
-                    value={formData.domicile === 'Select state' ? stateSearch : (isStateDropdownOpen ? stateSearch : formData.domicile)}
+                    placeholder={t("searchSelectState")}
+                    value={formData.domicile === 'selectState' ? stateSearch : (isStateDropdownOpen ? stateSearch : formData.domicile)}
                     disabled={currentUser && !isEditing}
                     onChange={(e) => {
                       setIsStateDropdownOpen(true);
                       setStateSearch(e.target.value);
-                      if (formData.domicile !== 'Select state') handleChange('domicile', 'Select state');
+                      if (formData.domicile !== 'selectState') handleChange('domicile', 'selectState');
                     }}
                     onFocus={() => {
                       if (!currentUser || isEditing) setIsStateDropdownOpen(true);
@@ -354,7 +377,7 @@ export default function Profile({ onAuthSuccess, user: currentUser }) {
                       password: 'password',
                       highestDegree: currentUser.highestDegree || "Bachelor's Degree",
                       careerPreference: currentUser.careerPreference || '',
-                      domicile: currentUser.domicile || 'Select state',
+                      domicile: currentUser.domicile || 'selectState',
                       pincode: currentUser.pincode || '',
                       referralCode: ''
                     });
@@ -459,7 +482,7 @@ export default function Profile({ onAuthSuccess, user: currentUser }) {
             category: user.category || 'General',
             highestDegree: user.highestDegree || "Bachelor's Degree",
             careerPreference: user.careerPreference || '',
-            domicile: user.domicile || 'Select state',
+            domicile: user.domicile || 'selectState',
             pincode: user.pincode || '',
           }));
         }}

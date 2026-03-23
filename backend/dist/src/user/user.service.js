@@ -93,6 +93,10 @@ let UserService = class UserService {
                                 where: { id: referrer.id },
                                 data: { credits: { increment: 10 } }
                             });
+                            await tx.user.update({
+                                where: { id: newUser.id },
+                                data: { credits: { increment: 10 } }
+                            });
                             await tx.referral.create({
                                 data: {
                                     referrerId: referrer.id,

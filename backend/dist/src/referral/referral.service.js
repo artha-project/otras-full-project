@@ -27,26 +27,33 @@ let ReferralService = class ReferralService {
         });
     }
     async getReferralStats(referrerId) {
-        const [referrals, referrer] = await Promise.all([
+        const [referralsMade, referrer] = await Promise.all([
             this.prisma.referral.findMany({ where: { referrerId } }),
             this.prisma.user.findUnique({
                 where: { id: referrerId },
-                select: { credits: true, referralCode: true },
+                select: { credits: true, referralCode: true, otrId: true },
             }),
         ]);
-        const totalReferrals = referrals.length;
-        const successReferrals = referrals.filter(r => r.status === 'Qualified Referral').length;
-        const creditsEarned = referrals.reduce((sum, r) => sum + (r.creditsEarned || 0), 0);
+        const joinedViaReferral = referrer ? await this.prisma.referral.findFirst({
+            where: { refereeOtrId: referrer.otrId }
+        }) : null;
+        const totalReferrals = referralsMade.length;
+        const successReferrals = referralsMade.filter(r => r.status === 'Qualified Referral').length;
+        let creditsEarned = referralsMade.reduce((sum, r) => sum + (r.creditsEarned || 0), 0);
+        if (joinedViaReferral) {
+            creditsEarned += 10;
+        }
         const mockTestsEarned = Math.floor(successReferrals / 10);
-        return {
+        const result = {
             totalReferrals,
             successReferrals,
             creditsEarned,
             mockTestsEarned,
             availableCredits: referrer?.credits ?? 0,
             referralCode: referrer?.referralCode ?? '',
-            referrals,
+            referrals: referralsMade,
         };
+        return result;
     }
     async getReferralHistory(referrerId) {
         const referrals = await this.prisma.referral.findMany({

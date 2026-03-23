@@ -9,7 +9,7 @@ import axios from 'axios';
 import { useTranslation } from '../hooks/useTranslation';
 
 /* ---------- helpers ---------- */
-const BASE_URL = 'https://otras.app/signup?ref=';
+const BASE_URL = `${window.location.origin}/profile?ref=`;
 
 function generateCode(user) {
     if (!user) return 'REF000000';
@@ -116,7 +116,7 @@ export default function ReferEarn({ user }) {
     };
 
     const handleShare = (platform) => {
-        const shareLink = `${window.location.origin}/register?ref=${user?.otrId || ''}`;
+        const shareLink = `${window.location.origin}/profile?ref=${code}`;
         const msg = encodeURIComponent(t('referralShareMsg', { link: shareLink }));
         const urls = {
             whatsapp: `https://wa.me/?text=${msg}`,
@@ -127,7 +127,7 @@ export default function ReferEarn({ user }) {
     };
 
     const platformShare = (platform) => {
-        const shareLink = `${window.location.origin}/register?ref=${user?.otrId || ''}`;
+        const shareLink = `${window.location.origin}/profile?ref=${code}`;
         const msg = encodeURIComponent(t('referralShareMsg', { link: shareLink }));
         const urls = {
             whatsapp: `https://wa.me/?text=${msg}`,
