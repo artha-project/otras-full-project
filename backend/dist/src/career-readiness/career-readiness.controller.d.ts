@@ -8,8 +8,8 @@ export declare class CareerReadinessController {
         answers: any[];
     }): Promise<{
         id: number;
-        otrId: string;
         createdAt: Date;
+        otrId: string;
         totalMarks: number;
         subjectBreakdown: import("@prisma/client/runtime/library").JsonValue;
         testId: number;
@@ -27,8 +27,8 @@ export declare class CareerReadinessController {
         };
     } & {
         id: number;
-        otrId: string;
         createdAt: Date;
+        otrId: string;
         totalMarks: number;
         subjectBreakdown: import("@prisma/client/runtime/library").JsonValue;
         testId: number;

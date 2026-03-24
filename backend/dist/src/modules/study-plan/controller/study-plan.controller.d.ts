@@ -26,8 +26,8 @@ export declare class StudyPlanController {
         })[];
     } & {
         id: string;
-        createdAt: Date;
         userId: number;
+        createdAt: Date;
         weakAreas: string[];
         examId: number | null;
         targetExam: string;
@@ -59,8 +59,8 @@ export declare class StudyPlanController {
         })[];
     } & {
         id: string;
-        createdAt: Date;
         userId: number;
+        createdAt: Date;
         weakAreas: string[];
         examId: number | null;
         targetExam: string;
@@ -92,8 +92,8 @@ export declare class StudyPlanController {
         })[];
     } & {
         id: string;
-        createdAt: Date;
         userId: number;
+        createdAt: Date;
         weakAreas: string[];
         examId: number | null;
         targetExam: string;
@@ -121,8 +121,8 @@ export declare class StudyPlanController {
     }>;
     delete(id: string): Promise<{
         id: string;
-        createdAt: Date;
         userId: number;
+        createdAt: Date;
         weakAreas: string[];
         examId: number | null;
         targetExam: string;

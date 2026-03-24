@@ -25,9 +25,9 @@ export declare class PaymentService {
             };
         } & {
             id: number;
+            userId: number;
             createdAt: Date;
             updatedAt: Date;
-            userId: number;
             status: string;
             subscriptionId: number;
             razorpayOrderId: string;
@@ -54,9 +54,9 @@ export declare class PaymentService {
         };
     } & {
         id: number;
+        userId: number;
         createdAt: Date;
         updatedAt: Date;
-        userId: number;
         status: string;
         subscriptionId: number;
         razorpayOrderId: string;
@@ -69,6 +69,7 @@ export declare class PaymentService {
     getAllPayments(): Promise<({
         user: {
             id: number;
+            createdAt: Date;
             firstName: string;
             lastName: string;
             email: string;
@@ -80,7 +81,6 @@ export declare class PaymentService {
             careerPreference: string | null;
             domicile: string | null;
             pincode: string | null;
-            createdAt: Date;
             updatedAt: Date;
             credits: number;
             referralCode: string;
@@ -96,9 +96,9 @@ export declare class PaymentService {
         };
     } & {
         id: number;
+        userId: number;
         createdAt: Date;
         updatedAt: Date;
-        userId: number;
         status: string;
         subscriptionId: number;
         razorpayOrderId: string;

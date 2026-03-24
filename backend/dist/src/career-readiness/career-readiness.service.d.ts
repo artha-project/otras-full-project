@@ -12,8 +12,8 @@ export declare class CareerReadinessService {
         }[];
     }): Promise<{
         id: number;
-        otrId: string;
         createdAt: Date;
+        otrId: string;
         totalMarks: number;
         subjectBreakdown: import("@prisma/client/runtime/library").JsonValue;
         testId: number;
@@ -31,8 +31,8 @@ export declare class CareerReadinessService {
         };
     } & {
         id: number;
-        otrId: string;
         createdAt: Date;
+        otrId: string;
         totalMarks: number;
         subjectBreakdown: import("@prisma/client/runtime/library").JsonValue;
         testId: number;

@@ -71,10 +71,10 @@ export declare class ArthaController {
         selectedExam: string | null;
         recentReports: {
             id: string;
-            otrId: string;
-            createdAt: Date;
             percentile: number | null;
+            createdAt: Date;
             readinessIndex: number | null;
+            otrId: string;
             tier: number;
             score: number;
             totalMarks: number;
@@ -88,11 +88,11 @@ export declare class ArthaController {
         userId: string;
     }, tier: string): Promise<{
         id: string;
-        createdAt: Date;
         logicalScore: number | null;
         quantScore: number | null;
         verbalScore: number | null;
         percentile: number | null;
+        createdAt: Date;
         readinessIndex: number | null;
         tier: number;
         score: number | null;
@@ -102,9 +102,9 @@ export declare class ArthaController {
         consistency: number | null;
         profileId: string;
         exam: string | null;
+        subjectScores: import("@prisma/client/runtime/library").JsonValue | null;
         startTime: Date | null;
         submitTime: Date | null;
-        subjectScores: import("@prisma/client/runtime/library").JsonValue | null;
     }>;
     completeTier1(body: ArthaProgressDto & {
         assessmentId?: string;
@@ -191,10 +191,10 @@ export declare class ArthaController {
         selectedExam: string | null;
         recentReports: {
             id: string;
-            otrId: string;
-            createdAt: Date;
             percentile: number | null;
+            createdAt: Date;
             readinessIndex: number | null;
+            otrId: string;
             tier: number;
             score: number;
             totalMarks: number;
@@ -278,10 +278,10 @@ export declare class ArthaController {
         selectedExam: string | null;
         recentReports: {
             id: string;
-            otrId: string;
-            createdAt: Date;
             percentile: number | null;
+            createdAt: Date;
             readinessIndex: number | null;
+            otrId: string;
             tier: number;
             score: number;
             totalMarks: number;
@@ -365,10 +365,10 @@ export declare class ArthaController {
         selectedExam: string | null;
         recentReports: {
             id: string;
-            otrId: string;
-            createdAt: Date;
             percentile: number | null;
+            createdAt: Date;
             readinessIndex: number | null;
+            otrId: string;
             tier: number;
             score: number;
             totalMarks: number;
@@ -460,10 +460,10 @@ export declare class ArthaController {
         selectedExam: string | null;
         recentReports: {
             id: string;
-            otrId: string;
-            createdAt: Date;
             percentile: number | null;
+            createdAt: Date;
             readinessIndex: number | null;
+            otrId: string;
             tier: number;
             score: number;
             totalMarks: number;

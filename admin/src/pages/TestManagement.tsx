@@ -10,6 +10,7 @@ export default function TestManagement() {
     const [formData, setFormData] = useState({ name: '', examId: '', questions: [] });
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [editingId, setEditingId] = useState<number | null>(null);
 
     useEffect(() => {
         fetchData();
@@ -36,18 +37,48 @@ export default function TestManagement() {
         setError(null);
         setSubmitting(true);
         try {
-            await axios.post('http://localhost:4000/test', {
-                name: formData.name,
-                examId: Number(formData.examId),
-            });
+            if (editingId) {
+                await axios.patch(`http://localhost:4000/test/${editingId}`, {
+                    name: formData.name,
+                    examId: Number(formData.examId),
+                });
+            } else {
+                await axios.post('http://localhost:4000/test', {
+                    name: formData.name,
+                    examId: Number(formData.examId),
+                });
+            }
             setShowForm(false);
+            setEditingId(null);
             setFormData({ name: '', examId: '', questions: [] });
             fetchData();
         } catch (err: any) {
             console.error(err);
-            setError(err.response?.data?.message || 'Failed to create test. Please ensure the exam has subjects and subjects have questions.');
+            setError(err.response?.data?.message || `Failed to ${editingId ? 'update' : 'create'} test. Please check requirements.`);
         } finally {
             setSubmitting(false);
+        }
+    };
+
+    const handleEdit = (test: any) => {
+        setFormData({
+            name: test.name,
+            examId: test.examId,
+            questions: []
+        });
+        setEditingId(test.id);
+        setShowForm(true);
+        window.scrollTo(0, 0);
+    };
+
+    const handleDelete = async (id: number) => {
+        if (!window.confirm('Are you sure you want to delete this test? All questions and results tied to it will be removed.')) return;
+        try {
+            await axios.delete(`http://localhost:4000/test/${id}`);
+            fetchData();
+        } catch (err) {
+            console.error(err);
+            alert('Failed to delete test.');
         }
     };
 
@@ -65,7 +96,13 @@ export default function TestManagement() {
                 </div>
 
                 <button
-                    onClick={() => setShowForm(!showForm)}
+                    onClick={() => {
+                        setShowForm(!showForm);
+                        if (showForm) {
+                            setEditingId(null);
+                            setFormData({ name: '', examId: '', questions: [] });
+                        }
+                    }}
                     className="flex items-center gap-2 px-4 py-2 bg-[var(--color-primary)] text-white rounded-[var(--radius-lg)] font-semibold text-sm hover:bg-[var(--color-primary-dark)] transition-colors"
                 >
                     <Plus size={18} />
@@ -145,7 +182,11 @@ export default function TestManagement() {
                         <button
                             type="button"
                             disabled={submitting}
-                            onClick={() => setShowForm(false)}
+                            onClick={() => {
+                                setShowForm(false);
+                                setEditingId(null);
+                                setFormData({ name: '', examId: '', questions: [] });
+                            }}
                             className="px-4 py-2 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-light)] rounded-[var(--radius-lg)] disabled:opacity-50"
                         >
                             Cancel
@@ -157,7 +198,7 @@ export default function TestManagement() {
                             className="px-6 py-2 bg-[var(--color-primary)] text-white rounded-[var(--radius-lg)] font-semibold text-sm hover:bg-[var(--color-primary-dark)] disabled:bg-slate-400 flex items-center gap-2"
                         >
                             {submitting && <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />}
-                            {submitting ? 'Generating...' : 'Generate Test'}
+                            {submitting ? (editingId ? 'Saving...' : 'Generating...') : (editingId ? 'Update Test' : 'Generate Test')}
                         </button>
 
                     </div>
@@ -215,9 +256,20 @@ export default function TestManagement() {
                         </div>
 
 
-                        <button className="px-4 py-2 border border-[var(--border-light)] text-[var(--text-secondary)] rounded-[var(--radius-lg)] text-sm font-semibold hover:bg-[var(--bg-light)] transition-colors">
-                            Manage Questions
-                        </button>
+                        <div className="flex gap-2">
+                            <button
+                                onClick={() => handleEdit(test)}
+                                className="px-3 py-2 border border-[var(--border-light)] text-[var(--color-primary)] rounded-[var(--radius-lg)] text-sm font-semibold hover:bg-[var(--color-primary-light)] transition-colors"
+                            >
+                                Edit Test
+                            </button>
+                            <button
+                                onClick={() => handleDelete(test.id)}
+                                className="px-3 py-2 border border-red-100 text-red-600 bg-red-50 rounded-[var(--radius-lg)] text-sm font-semibold hover:bg-red-100 hover:border-red-200 transition-colors"
+                            >
+                                Delete
+                            </button>
+                        </div>
 
                     </div>
 

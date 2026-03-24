@@ -23,8 +23,8 @@ export declare class StudyPlanRepository {
         })[];
     } & {
         id: string;
-        createdAt: Date;
         userId: number;
+        createdAt: Date;
         weakAreas: string[];
         examId: number | null;
         targetExam: string;
@@ -56,8 +56,8 @@ export declare class StudyPlanRepository {
         })[];
     } & {
         id: string;
-        createdAt: Date;
         userId: number;
+        createdAt: Date;
         weakAreas: string[];
         examId: number | null;
         targetExam: string;
@@ -89,8 +89,8 @@ export declare class StudyPlanRepository {
         })[];
     } & {
         id: string;
-        createdAt: Date;
         userId: number;
+        createdAt: Date;
         weakAreas: string[];
         examId: number | null;
         targetExam: string;
@@ -149,8 +149,8 @@ export declare class StudyPlanRepository {
     }>;
     delete(id: string): Promise<{
         id: string;
-        createdAt: Date;
         userId: number;
+        createdAt: Date;
         weakAreas: string[];
         examId: number | null;
         targetExam: string;

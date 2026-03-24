@@ -10,8 +10,8 @@ export declare class ExamService {
     } & {
         id: number;
         createdAt: Date;
-        updatedAt: Date;
         name: string;
+        updatedAt: Date;
         cutoff: number | null;
         syllabus: string | null;
         eligibility: string | null;
@@ -29,8 +29,8 @@ export declare class ExamService {
     } & {
         id: number;
         createdAt: Date;
-        updatedAt: Date;
         name: string;
+        updatedAt: Date;
         cutoff: number | null;
         syllabus: string | null;
         eligibility: string | null;
@@ -48,8 +48,8 @@ export declare class ExamService {
     } & {
         id: number;
         createdAt: Date;
-        updatedAt: Date;
         name: string;
+        updatedAt: Date;
         cutoff: number | null;
         syllabus: string | null;
         eligibility: string | null;
@@ -67,8 +67,8 @@ export declare class ExamService {
     } & {
         id: number;
         createdAt: Date;
-        updatedAt: Date;
         name: string;
+        updatedAt: Date;
         cutoff: number | null;
         syllabus: string | null;
         eligibility: string | null;
@@ -106,8 +106,8 @@ export declare class ExamService {
             }[];
             id: number;
             createdAt: Date;
-            updatedAt: Date;
             name: string;
+            updatedAt: Date;
             cutoff: number | null;
             syllabus: string | null;
             eligibility: string | null;
@@ -126,8 +126,8 @@ export declare class ExamService {
     } & {
         id: number;
         createdAt: Date;
-        updatedAt: Date;
         name: string;
+        updatedAt: Date;
         cutoff: number | null;
         syllabus: string | null;
         eligibility: string | null;
@@ -137,4 +137,18 @@ export declare class ExamService {
         shortDescription: string | null;
         applicationStatus: string;
     })[]>;
+    remove(id: number): Promise<{
+        id: number;
+        createdAt: Date;
+        name: string;
+        updatedAt: Date;
+        cutoff: number | null;
+        syllabus: string | null;
+        eligibility: string | null;
+        longDescription: string | null;
+        noOfQuestions: number | null;
+        pattern: string | null;
+        shortDescription: string | null;
+        applicationStatus: string;
+    }>;
 }

@@ -8,8 +8,8 @@ export declare class ResultController {
         tier?: number;
     }): Promise<{
         id: number;
-        createdAt: Date;
         userId: number;
+        createdAt: Date;
         tier: number | null;
         score: number;
         subjectBreakdown: import("@prisma/client/runtime/library").JsonValue;
@@ -37,8 +37,8 @@ export declare class ResultController {
         };
     } & {
         id: number;
-        createdAt: Date;
         userId: number;
+        createdAt: Date;
         tier: number | null;
         score: number;
         subjectBreakdown: import("@prisma/client/runtime/library").JsonValue;

@@ -21,8 +21,8 @@ export declare class SubjectService {
         exams: {
             id: number;
             createdAt: Date;
-            updatedAt: Date;
             name: string;
+            updatedAt: Date;
             cutoff: number | null;
             syllabus: string | null;
             eligibility: string | null;
@@ -48,8 +48,8 @@ export declare class SubjectService {
         exams: {
             id: number;
             createdAt: Date;
-            updatedAt: Date;
             name: string;
+            updatedAt: Date;
             cutoff: number | null;
             syllabus: string | null;
             eligibility: string | null;

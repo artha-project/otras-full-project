@@ -140,4 +140,10 @@ export class ExamService {
       include: { subjects: true },
     });
   }
+
+  async remove(id: number) {
+    return this.prisma.exam.delete({
+      where: { id },
+    });
+  }
 }

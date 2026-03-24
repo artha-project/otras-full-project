@@ -38,6 +38,7 @@ const app_module_1 = require("./app.module");
 const child_process_1 = require("child_process");
 const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
+require("dotenv/config");
 async function bootstrap() {
     const envPath = path.resolve(process.cwd(), '.env');
     if (fs.existsSync(envPath)) {

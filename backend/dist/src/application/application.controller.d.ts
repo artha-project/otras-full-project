@@ -7,12 +7,12 @@ export declare class ApplicationController {
         examId: number;
     }): Promise<{
         id: number;
+        userId: number;
         createdAt: Date;
         updatedAt: Date;
-        userId: number;
+        applicationStatus: string;
         status: string;
         examId: number;
-        applicationStatus: string;
         admitCardStatus: string;
         examKeyStatus: string;
         resultStatus: string;
@@ -21,8 +21,8 @@ export declare class ApplicationController {
         exam: {
             id: number;
             createdAt: Date;
-            updatedAt: Date;
             name: string;
+            updatedAt: Date;
             cutoff: number | null;
             syllabus: string | null;
             eligibility: string | null;
@@ -34,12 +34,12 @@ export declare class ApplicationController {
         };
     } & {
         id: number;
+        userId: number;
         createdAt: Date;
         updatedAt: Date;
-        userId: number;
+        applicationStatus: string;
         status: string;
         examId: number;
-        applicationStatus: string;
         admitCardStatus: string;
         examKeyStatus: string;
         resultStatus: string;
@@ -48,8 +48,8 @@ export declare class ApplicationController {
         exam: {
             id: number;
             createdAt: Date;
-            updatedAt: Date;
             name: string;
+            updatedAt: Date;
             cutoff: number | null;
             syllabus: string | null;
             eligibility: string | null;
@@ -61,12 +61,12 @@ export declare class ApplicationController {
         };
     } & {
         id: number;
+        userId: number;
         createdAt: Date;
         updatedAt: Date;
-        userId: number;
+        applicationStatus: string;
         status: string;
         examId: number;
-        applicationStatus: string;
         admitCardStatus: string;
         examKeyStatus: string;
         resultStatus: string;
@@ -74,6 +74,7 @@ export declare class ApplicationController {
     findAll(): Promise<({
         user: {
             id: number;
+            createdAt: Date;
             firstName: string;
             lastName: string;
             email: string;
@@ -85,7 +86,6 @@ export declare class ApplicationController {
             careerPreference: string | null;
             domicile: string | null;
             pincode: string | null;
-            createdAt: Date;
             updatedAt: Date;
             credits: number;
             referralCode: string;
@@ -94,8 +94,8 @@ export declare class ApplicationController {
         exam: {
             id: number;
             createdAt: Date;
-            updatedAt: Date;
             name: string;
+            updatedAt: Date;
             cutoff: number | null;
             syllabus: string | null;
             eligibility: string | null;
@@ -107,24 +107,24 @@ export declare class ApplicationController {
         };
     } & {
         id: number;
+        userId: number;
         createdAt: Date;
         updatedAt: Date;
-        userId: number;
+        applicationStatus: string;
         status: string;
         examId: number;
-        applicationStatus: string;
         admitCardStatus: string;
         examKeyStatus: string;
         resultStatus: string;
     })[]>;
     updateStatus(id: string, statusData: any): Promise<{
         id: number;
+        userId: number;
         createdAt: Date;
         updatedAt: Date;
-        userId: number;
+        applicationStatus: string;
         status: string;
         examId: number;
-        applicationStatus: string;
         admitCardStatus: string;
         examKeyStatus: string;
         resultStatus: string;

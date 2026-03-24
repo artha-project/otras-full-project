@@ -76,10 +76,10 @@ export declare class ArthaService {
         selectedExam: string | null;
         recentReports: {
             id: string;
-            otrId: string;
-            createdAt: Date;
             percentile: number | null;
+            createdAt: Date;
             readinessIndex: number | null;
+            otrId: string;
             tier: number;
             score: number;
             totalMarks: number;
@@ -91,11 +91,11 @@ export declare class ArthaService {
     }>;
     startTierAssessment(userId: string, tier: number): Promise<{
         id: string;
-        createdAt: Date;
         logicalScore: number | null;
         quantScore: number | null;
         verbalScore: number | null;
         percentile: number | null;
+        createdAt: Date;
         readinessIndex: number | null;
         tier: number;
         score: number | null;
@@ -105,9 +105,9 @@ export declare class ArthaService {
         consistency: number | null;
         profileId: string;
         exam: string | null;
+        subjectScores: import("@prisma/client/runtime/library").JsonValue | null;
         startTime: Date | null;
         submitTime: Date | null;
-        subjectScores: import("@prisma/client/runtime/library").JsonValue | null;
     }>;
     recordQuestionAttempt(data: {
         assessmentId: string;
@@ -207,10 +207,10 @@ export declare class ArthaService {
         selectedExam: string | null;
         recentReports: {
             id: string;
-            otrId: string;
-            createdAt: Date;
             percentile: number | null;
+            createdAt: Date;
             readinessIndex: number | null;
+            otrId: string;
             tier: number;
             score: number;
             totalMarks: number;
@@ -288,10 +288,10 @@ export declare class ArthaService {
         selectedExam: string | null;
         recentReports: {
             id: string;
-            otrId: string;
-            createdAt: Date;
             percentile: number | null;
+            createdAt: Date;
             readinessIndex: number | null;
+            otrId: string;
             tier: number;
             score: number;
             totalMarks: number;
@@ -369,10 +369,10 @@ export declare class ArthaService {
         selectedExam: string | null;
         recentReports: {
             id: string;
-            otrId: string;
-            createdAt: Date;
             percentile: number | null;
+            createdAt: Date;
             readinessIndex: number | null;
+            otrId: string;
             tier: number;
             score: number;
             totalMarks: number;

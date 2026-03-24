@@ -7,6 +7,8 @@ export declare class UserController {
     private readonly mockTestService;
     constructor(userService: UserService, resultService: ResultService, mockTestService: MockTestService);
     findAll(): Promise<{
+        id: number;
+        createdAt: Date;
         firstName: string;
         lastName: string;
         email: string;
@@ -18,14 +20,14 @@ export declare class UserController {
         careerPreference: string | null;
         domicile: string | null;
         pincode: string | null;
-        createdAt: Date;
         updatedAt: Date;
         credits: number;
         referralCode: string;
         preferredLanguage: string;
-        id: number;
     }[]>;
     findOne(id: number): Promise<{
+        id: number;
+        createdAt: Date;
         firstName: string;
         lastName: string;
         email: string;
@@ -37,12 +39,10 @@ export declare class UserController {
         careerPreference: string | null;
         domicile: string | null;
         pincode: string | null;
-        createdAt: Date;
         updatedAt: Date;
         credits: number;
         referralCode: string;
         preferredLanguage: string;
-        id: number;
     } | null>;
     getDashboardData(id: number): Promise<{
         user: {
@@ -76,6 +76,8 @@ export declare class UserController {
         }[];
     }>;
     update(id: number, data: any): Promise<{
+        id: number;
+        createdAt: Date;
         firstName: string;
         lastName: string;
         email: string;
@@ -87,14 +89,14 @@ export declare class UserController {
         careerPreference: string | null;
         domicile: string | null;
         pincode: string | null;
-        createdAt: Date;
         updatedAt: Date;
         credits: number;
         referralCode: string;
         preferredLanguage: string;
-        id: number;
     }>;
     remove(id: number): Promise<{
+        id: number;
+        createdAt: Date;
         firstName: string;
         lastName: string;
         email: string;
@@ -106,12 +108,10 @@ export declare class UserController {
         careerPreference: string | null;
         domicile: string | null;
         pincode: string | null;
-        createdAt: Date;
         updatedAt: Date;
         credits: number;
         referralCode: string;
         preferredLanguage: string;
-        id: number;
     }>;
     getTierStatus(id: number): Promise<{
         tier1: {

@@ -26,8 +26,8 @@ export declare class StudyPlanService {
         })[];
     } & {
         id: string;
-        createdAt: Date;
         userId: number;
+        createdAt: Date;
         weakAreas: string[];
         examId: number | null;
         targetExam: string;
@@ -60,8 +60,8 @@ export declare class StudyPlanService {
         })[];
     } & {
         id: string;
-        createdAt: Date;
         userId: number;
+        createdAt: Date;
         weakAreas: string[];
         examId: number | null;
         targetExam: string;
@@ -93,8 +93,8 @@ export declare class StudyPlanService {
         })[];
     } & {
         id: string;
-        createdAt: Date;
         userId: number;
+        createdAt: Date;
         weakAreas: string[];
         examId: number | null;
         targetExam: string;
@@ -127,8 +127,8 @@ export declare class StudyPlanService {
     private viewPlan;
     delete(id: string): Promise<{
         id: string;
-        createdAt: Date;
         userId: number;
+        createdAt: Date;
         weakAreas: string[];
         examId: number | null;
         targetExam: string;

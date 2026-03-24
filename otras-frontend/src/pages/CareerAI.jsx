@@ -174,7 +174,8 @@ const CareerAI = ({ user }) => {
             logicalScore: status.logicalScore || 0,
             quantScore: status.quantScore || 0,
             verbalScore: status.verbalScore || 0,
-            selectedExam: status.selectedExam || ""
+            selectedExam: status.selectedExam || "",
+            confidenceIndex: status.readinessIndex || 50
           }));
           console.log("CareerAI: Values synced successfully");
         }

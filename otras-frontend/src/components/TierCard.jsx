@@ -43,13 +43,7 @@ export default function TierCard({
           <h3 className="font-bold text-slate-400 text-xl mb-1">{title}</h3>
           <p className="text-slate-300 text-xs font-bold uppercase tracking-wider mb-4">{subTitle}</p>
           <p className="text-slate-300 text-sm mb-6">{description}</p>
-          <div className="mb-6">
-            <div className="flex justify-between text-xs text-slate-300 mb-2">
-              <span className="font-semibold">{t("tierProgress")}</span>
-              <span>0%</span>
-            </div>
-            <div className="h-2 bg-slate-100 rounded-full" />
-          </div>
+
           <button
             disabled
             className="w-full py-4 rounded-2xl text-slate-300 font-bold text-sm flex items-center justify-center gap-2 bg-slate-100"
@@ -92,15 +86,7 @@ export default function TierCard({
 
       {!features && tier?.desc && <p className="text-slate-500 text-sm mb-6 flex-1">{tier.desc}</p>}
       
-      <div className="mb-6">
-        <div className="flex justify-between text-xs text-slate-500 mb-2">
-          <span className="font-bold text-slate-700">{t("tierProgress")}</span>
-          <span>0%</span>
-        </div>
-        <div className="h-2 bg-slate-100 rounded-full">
-          <div className="h-2 bg-blue-500 rounded-full" style={{ width: '0%' }} />
-        </div>
-      </div>
+
       
       <div className="space-y-3">
         <button

@@ -134,6 +134,11 @@ let ExamService = class ExamService {
             include: { subjects: true },
         });
     }
+    async remove(id) {
+        return this.prisma.exam.delete({
+            where: { id },
+        });
+    }
 };
 exports.ExamService = ExamService;
 exports.ExamService = ExamService = __decorate([

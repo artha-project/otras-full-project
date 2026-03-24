@@ -81,7 +81,7 @@ model Question {
   answer    String
   subjectId Int
   createdAt DateTime @default(now())
-  subject   Subject  @relation(fields: [subjectId], references: [id])
+  subject   Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
   tests     Test[]   @relation("QuestionToTest")
 }
 
@@ -92,7 +92,7 @@ model Test {
   createdAt             DateTime                   @default(now())
   careerReadinessScores CareerReadinessTestScore[]
   results               Result[]
-  exam                  Exam                       @relation(fields: [examId], references: [id])
+  exam                  Exam                       @relation(fields: [examId], references: [id], onDelete: Cascade)
   questions             Question[]                 @relation("QuestionToTest")
 }
 
@@ -102,7 +102,7 @@ model PYP {
   fileUrl   String
   examId    Int
   createdAt DateTime @default(now())
-  exam      Exam     @relation(fields: [examId], references: [id])
+  exam      Exam     @relation(fields: [examId], references: [id], onDelete: Cascade)
 }
 
 model Subscription {
@@ -133,7 +133,7 @@ model Result {
   tier             Int?
   startTime        DateTime?
   submitTime       DateTime?
-  test             Test      @relation(fields: [testId], references: [id])
+  test             Test      @relation(fields: [testId], references: [id], onDelete: Cascade)
   user             User      @relation(fields: [userId], references: [id])
 }
 
@@ -148,7 +148,7 @@ model Application {
   resultStatus      String   @default("Pending")
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
-  exam              Exam     @relation(fields: [examId], references: [id])
+  exam              Exam     @relation(fields: [examId], references: [id], onDelete: Cascade)
   user              User     @relation(fields: [userId], references: [id])
 
   @@unique([userId, examId])
@@ -172,7 +172,7 @@ model MockTest {
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
   category        MockTestCategory  @relation(fields: [categoryId], references: [id])
-  exam            Exam?             @relation(fields: [examId], references: [id])
+  exam            Exam?             @relation(fields: [examId], references: [id], onDelete: Cascade)
   attempts        MockTestAttempt[]
   referralRewards ReferralReward[]
 }
@@ -188,7 +188,7 @@ model MockTestAttempt {
   attemptedAt      DateTime  @default(now())
   startTime        DateTime?
   submitTime       DateTime?
-  mockTest         MockTest  @relation(fields: [mockTestId], references: [id])
+  mockTest         MockTest  @relation(fields: [mockTestId], references: [id], onDelete: Cascade)
   user             User      @relation(fields: [otrId], references: [otrId])
 }
 
@@ -204,7 +204,7 @@ model CareerReadinessTestScore {
   subjectBreakdown Json
   createdAt        DateTime @default(now())
   user             User     @relation(fields: [otrId], references: [otrId])
-  test             Test     @relation(fields: [testId], references: [id])
+  test             Test     @relation(fields: [testId], references: [id], onDelete: Cascade)
 
   @@unique([otrId, testId], name: "otrId_testId")
 }
@@ -245,7 +245,7 @@ model ReferralReward {
   mockTestId Int
   isRedeemed Boolean  @default(false)
   createdAt  DateTime @default(now())
-  mockTest   MockTest @relation(fields: [mockTestId], references: [id])
+  mockTest   MockTest @relation(fields: [mockTestId], references: [id], onDelete: Cascade)
   user       User     @relation(fields: [userId], references: [id])
 }
 
@@ -264,7 +264,7 @@ model StudyPlan {
   revisionStrategy    String
   preferredStudyTimes String
   createdAt           DateTime       @default(now())
-  exam                Exam?          @relation(fields: [examId], references: [id])
+  exam                Exam?          @relation(fields: [examId], references: [id], onDelete: Cascade)
   user                User           @relation(fields: [userId], references: [id])
   days                StudyPlanDay[]
 }

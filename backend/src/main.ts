@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
+import 'dotenv/config';
 
 async function bootstrap() {
   // Robust .env loader
@@ -37,18 +38,18 @@ async function bootstrap() {
           console.log(`Killing process ${pid} on port ${port}`);
           execSync(`taskkill /F /PID ${pid}`, { stdio: 'ignore' });
         }
-      } catch (e) {}
+      } catch (e) { }
     }
-  } catch (e) {}
+  } catch (e) { }
 
   const app = await NestFactory.create(AppModule);
   app.enableCors();
-  
+
   // Use express middleware for large payloads
   const express = require('express');
   app.use(express.json({ limit: '10mb' }));
   app.use(express.urlencoded({ limit: '10mb', extended: true }));
-  
+
   try {
     await app.listen(port);
     console.log(`Backend is running on: http://localhost:${port}`);

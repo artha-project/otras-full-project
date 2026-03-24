@@ -4,8 +4,8 @@ export declare class ResultService {
     constructor(prisma: PrismaService);
     startTest(userId: number, testId: number, tier?: number): Promise<{
         id: number;
-        createdAt: Date;
         userId: number;
+        createdAt: Date;
         tier: number | null;
         score: number;
         subjectBreakdown: import("@prisma/client/runtime/library").JsonValue;
@@ -27,8 +27,8 @@ export declare class ResultService {
         };
     } & {
         id: number;
-        createdAt: Date;
         userId: number;
+        createdAt: Date;
         tier: number | null;
         score: number;
         subjectBreakdown: import("@prisma/client/runtime/library").JsonValue;

@@ -13,8 +13,8 @@ export declare class PypService {
         exam: {
             id: number;
             createdAt: Date;
-            updatedAt: Date;
             name: string;
+            updatedAt: Date;
             cutoff: number | null;
             syllabus: string | null;
             eligibility: string | null;
